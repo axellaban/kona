@@ -1,0 +1,168 @@
+{
+    "name":  "KONA - 01 Optin",
+    "nodes":  [
+                  {
+                      "parameters":  {
+                                         "httpMethod":  "POST",
+                                         "path":  "kona-optin",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "name":  "Webhook",
+                      "type":  "n8n-nodes-base.webhook",
+                      "typeVersion":  1,
+                      "position":  [
+                                       250,
+                                       300
+                                   ],
+                      "webhookId":  "kona-optin-webhook"
+                  },
+                  {
+                      "parameters":  {
+                                         "keepOnlySet":  false,
+                                         "values":  {
+                                                        "string":  [
+                                                                       {
+                                                                           "name":  "wa_normalized",
+                                                                           "value":  "={{ $json.body.wa.replace(/\\s+/g, \u0027\u0027).replace(/[^0-9+]/g, \u0027\u0027) }}"
+                                                                       }
+                                                                   ]
+                                                    },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "name":  "Normalizar WA",
+                      "type":  "n8n-nodes-base.set",
+                      "typeVersion":  1,
+                      "position":  [
+                                       450,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+
+                                     },
+                      "name":  "Google Sheets / Airtable (Placeholder)",
+                      "type":  "n8n-nodes-base.noOp",
+                      "typeVersion":  1,
+                      "position":  [
+                                       650,
+                                       300
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Guardar WA, fuente, timestamp, status=\u0027optin\u0027"
+                  },
+                  {
+                      "parameters":  {
+                                         "amount":  60,
+                                         "unit":  "minutes"
+                                     },
+                      "name":  "Wait 60m",
+                      "type":  "n8n-nodes-base.wait",
+                      "typeVersion":  1.1,
+                      "position":  [
+                                       850,
+                                       300
+                                   ],
+                      "webhookId":  "wait-60m-optin"
+                  },
+                  {
+                      "parameters":  {
+                                         "conditions":  {
+                                                            "string":  [
+                                                                           {
+                                                                               "value1":  "={{ $json.status }}",
+                                                                               "value2":  "optin"
+                                                                           }
+                                                                       ]
+                                                        }
+                                     },
+                      "name":  "Verificar Calculadora",
+                      "type":  "n8n-nodes-base.if",
+                      "typeVersion":  1,
+                      "position":  [
+                                       1050,
+                                       300
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Reemplazar con verificar BD si completó calculadora"
+                  },
+                  {
+                      "parameters":  {
+
+                                     },
+                      "name":  "Secuencia A Msj 1",
+                      "type":  "n8n-nodes-base.noOp",
+                      "typeVersion":  1,
+                      "position":  [
+                                       1250,
+                                       280
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Enviar Secuencia A Msj 1 si no completó calculadora"
+                  }
+              ],
+    "connections":  {
+                        "Webhook":  {
+                                        "main":  [
+                                                     [
+                                                         {
+                                                             "node":  "Normalizar WA",
+                                                             "type":  "main",
+                                                             "index":  0
+                                                         }
+                                                     ]
+                                                 ]
+                                    },
+                        "Normalizar WA":  {
+                                              "main":  [
+                                                           [
+                                                               {
+                                                                   "node":  "Google Sheets / Airtable (Placeholder)",
+                                                                   "type":  "main",
+                                                                   "index":  0
+                                                               }
+                                                           ]
+                                                       ]
+                                          },
+                        "Google Sheets / Airtable (Placeholder)":  {
+                                                                       "main":  [
+                                                                                    [
+                                                                                        {
+                                                                                            "node":  "Wait 60m",
+                                                                                            "type":  "main",
+                                                                                            "index":  0
+                                                                                        }
+                                                                                    ]
+                                                                                ]
+                                                                   },
+                        "Wait 60m":  {
+                                         "main":  [
+                                                      [
+                                                          {
+                                                              "node":  "Verificar Calculadora",
+                                                              "type":  "main",
+                                                              "index":  0
+                                                          }
+                                                      ]
+                                                  ]
+                                     },
+                        "Verificar Calculadora":  {
+                                                      "main":  [
+                                                                   [
+                                                                       {
+                                                                           "node":  "Secuencia A Msj 1",
+                                                                           "type":  "main",
+                                                                           "index":  0
+                                                                       }
+                                                                   ]
+                                                               ]
+                                                  }
+                    },
+    "settings":  {
+
+                 }
+}

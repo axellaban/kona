@@ -1,0 +1,211 @@
+{
+    "name":  "KONA - 03 Formulario",
+    "nodes":  [
+                  {
+                      "parameters":  {
+                                         "httpMethod":  "POST",
+                                         "path":  "kona-formulario",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "name":  "Webhook",
+                      "type":  "n8n-nodes-base.webhook",
+                      "typeVersion":  1,
+                      "position":  [
+                                       250,
+                                       300
+                                   ],
+                      "webhookId":  "kona-form-webhook"
+                  },
+                  {
+                      "parameters":  {
+
+                                     },
+                      "name":  "Google Sheets / Airtable (Placeholder)",
+                      "type":  "n8n-nodes-base.noOp",
+                      "typeVersion":  1,
+                      "position":  [
+                                       450,
+                                       300
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Actualizar fila: q1, q2, q3, status=\u0027formulario_enviado\u0027"
+                  },
+                  {
+                      "parameters":  {
+
+                                     },
+                      "name":  "Notificarme",
+                      "type":  "n8n-nodes-base.noOp",
+                      "typeVersion":  1,
+                      "position":  [
+                                       650,
+                                       300
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Notificar por WhatsApp/Telegram"
+                  },
+                  {
+                      "parameters":  {
+                                         "conditions":  {
+                                                            "string":  [
+                                                                           {
+                                                                               "value1":  "={{ $json.body.q3 }}",
+                                                                               "operation":  "notEqual",
+                                                                               "value2":  "no"
+                                                                           }
+                                                                       ]
+                                                        }
+                                     },
+                      "name":  "Q3 != no",
+                      "type":  "n8n-nodes-base.if",
+                      "typeVersion":  1,
+                      "position":  [
+                                       850,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+
+                                     },
+                      "name":  "Marcar no disponible",
+                      "type":  "n8n-nodes-base.noOp",
+                      "typeVersion":  1,
+                      "position":  [
+                                       1050,
+                                       400
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Marcar lead como no_disponible si q3=no"
+                  },
+                  {
+                      "parameters":  {
+                                         "amount":  30,
+                                         "unit":  "minutes"
+                                     },
+                      "name":  "Wait 30m",
+                      "type":  "n8n-nodes-base.wait",
+                      "typeVersion":  1.1,
+                      "position":  [
+                                       1050,
+                                       200
+                                   ],
+                      "webhookId":  "wait-30m-form"
+                  },
+                  {
+                      "parameters":  {
+                                         "conditions":  {
+                                                            "string":  [
+                                                                           {
+                                                                               "value1":  "={{ $json.status }}",
+                                                                               "value2":  "formulario_enviado"
+                                                                           }
+                                                                       ]
+                                                        }
+                                     },
+                      "name":  "Verificar Llamada",
+                      "type":  "n8n-nodes-base.if",
+                      "typeVersion":  1,
+                      "position":  [
+                                       1250,
+                                       200
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Chequear si agendó llamada"
+                  },
+                  {
+                      "parameters":  {
+
+                                     },
+                      "name":  "Secuencia C Msj 1",
+                      "type":  "n8n-nodes-base.noOp",
+                      "typeVersion":  1,
+                      "position":  [
+                                       1450,
+                                       180
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Disparar si no agendó"
+                  }
+              ],
+    "connections":  {
+                        "Webhook":  {
+                                        "main":  [
+                                                     [
+                                                         {
+                                                             "node":  "Google Sheets / Airtable (Placeholder)",
+                                                             "type":  "main",
+                                                             "index":  0
+                                                         }
+                                                     ]
+                                                 ]
+                                    },
+                        "Google Sheets / Airtable (Placeholder)":  {
+                                                                       "main":  [
+                                                                                    [
+                                                                                        {
+                                                                                            "node":  "Notificarme",
+                                                                                            "type":  "main",
+                                                                                            "index":  0
+                                                                                        }
+                                                                                    ]
+                                                                                ]
+                                                                   },
+                        "Notificarme":  {
+                                            "main":  [
+                                                         [
+                                                             {
+                                                                 "node":  "Q3 != no",
+                                                                 "type":  "main",
+                                                                 "index":  0
+                                                             }
+                                                         ]
+                                                     ]
+                                        },
+                        "Q3 != no":  {
+                                         "main":  [
+                                                      [
+                                                          {
+                                                              "node":  "Wait 30m",
+                                                              "type":  "main",
+                                                              "index":  0
+                                                          }
+                                                      ],
+                                                      [
+                                                          {
+                                                              "node":  "Marcar no disponible",
+                                                              "type":  "main",
+                                                              "index":  0
+                                                          }
+                                                      ]
+                                                  ]
+                                     },
+                        "Wait 30m":  {
+                                         "main":  [
+                                                      [
+                                                          {
+                                                              "node":  "Verificar Llamada",
+                                                              "type":  "main",
+                                                              "index":  0
+                                                          }
+                                                      ]
+                                                  ]
+                                     },
+                        "Verificar Llamada":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Secuencia C Msj 1",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              }
+                    },
+    "settings":  {
+
+                 }
+}

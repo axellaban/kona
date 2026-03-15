@@ -1,0 +1,161 @@
+{
+    "name":  "KONA - 04 Calendly",
+    "nodes":  [
+                  {
+                      "parameters":  {
+                                         "httpMethod":  "POST",
+                                         "path":  "kona-calendly",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "name":  "Webhook (Calendly Mock)",
+                      "type":  "n8n-nodes-base.webhook",
+                      "typeVersion":  1,
+                      "position":  [
+                                       250,
+                                       300
+                                   ],
+                      "webhookId":  "kona-calendly-webhook"
+                  },
+                  {
+                      "parameters":  {
+                                         "keepOnlySet":  false,
+                                         "values":  {
+                                                        "string":  [
+                                                                       {
+                                                                           "name":  "email",
+                                                                           "value":  "={{ $json.body.payload.email }}"
+                                                                       },
+                                                                       {
+                                                                           "name":  "name",
+                                                                           "value":  "={{ $json.body.payload.name }}"
+                                                                       }
+                                                                   ]
+                                                    },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "name":  "Extraer Datos",
+                      "type":  "n8n-nodes-base.set",
+                      "typeVersion":  1,
+                      "position":  [
+                                       450,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+
+                                     },
+                      "name":  "Google Sheets / Airtable (Placeholder)",
+                      "type":  "n8n-nodes-base.noOp",
+                      "typeVersion":  1,
+                      "position":  [
+                                       650,
+                                       300
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Buscar por email/WA, update status=\u0027llamada_agendada\u0027"
+                  },
+                  {
+                      "parameters":  {
+
+                                     },
+                      "name":  "Detener Secuencias",
+                      "type":  "n8n-nodes-base.noOp",
+                      "typeVersion":  1,
+                      "position":  [
+                                       850,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+
+                                     },
+                      "name":  "Notificarme",
+                      "type":  "n8n-nodes-base.noOp",
+                      "typeVersion":  1,
+                      "position":  [
+                                       1050,
+                                       300
+                                   ]
+                  },
+                  {
+                      "parameters":  {
+
+                                     },
+                      "name":  "Confirmación WA",
+                      "type":  "n8n-nodes-base.noOp",
+                      "typeVersion":  1,
+                      "position":  [
+                                       1250,
+                                       300
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Enviar [nombre], confirmado. Nos vemos el [fecha]..."
+                  }
+              ],
+    "connections":  {
+                        "Webhook (Calendly Mock)":  {
+                                                        "main":  [
+                                                                     [
+                                                                         {
+                                                                             "node":  "Extraer Datos",
+                                                                             "type":  "main",
+                                                                             "index":  0
+                                                                         }
+                                                                     ]
+                                                                 ]
+                                                    },
+                        "Extraer Datos":  {
+                                              "main":  [
+                                                           [
+                                                               {
+                                                                   "node":  "Google Sheets / Airtable (Placeholder)",
+                                                                   "type":  "main",
+                                                                   "index":  0
+                                                               }
+                                                           ]
+                                                       ]
+                                          },
+                        "Google Sheets / Airtable (Placeholder)":  {
+                                                                       "main":  [
+                                                                                    [
+                                                                                        {
+                                                                                            "node":  "Detener Secuencias",
+                                                                                            "type":  "main",
+                                                                                            "index":  0
+                                                                                        }
+                                                                                    ]
+                                                                                ]
+                                                                   },
+                        "Detener Secuencias":  {
+                                                   "main":  [
+                                                                [
+                                                                    {
+                                                                        "node":  "Notificarme",
+                                                                        "type":  "main",
+                                                                        "index":  0
+                                                                    }
+                                                                ]
+                                                            ]
+                                               },
+                        "Notificarme":  {
+                                            "main":  [
+                                                         [
+                                                             {
+                                                                 "node":  "Confirmación WA",
+                                                                 "type":  "main",
+                                                                 "index":  0
+                                                             }
+                                                         ]
+                                                     ]
+                                        }
+                    },
+    "settings":  {
+
+                 }
+}

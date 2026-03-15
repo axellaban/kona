@@ -1,0 +1,186 @@
+{
+    "name":  "KONA - 02 Calculadora",
+    "nodes":  [
+                  {
+                      "parameters":  {
+                                         "httpMethod":  "POST",
+                                         "path":  "kona-calculadora",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "name":  "Webhook",
+                      "type":  "n8n-nodes-base.webhook",
+                      "typeVersion":  1,
+                      "position":  [
+                                       250,
+                                       300
+                                   ],
+                      "webhookId":  "kona-calculadora-webhook"
+                  },
+                  {
+                      "parameters":  {
+
+                                     },
+                      "name":  "Google Sheets / Airtable (Placeholder)",
+                      "type":  "n8n-nodes-base.noOp",
+                      "typeVersion":  1,
+                      "position":  [
+                                       450,
+                                       300
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Actualizar fila por WA: agregar nombre, proceso, netoAnual, directCost, status=\u0027calculadora_completa\u0027"
+                  },
+                  {
+                      "parameters":  {
+                                         "conditions":  {
+                                                            "number":  [
+                                                                           {
+                                                                               "value1":  "={{ $json.body.netoAnual }}",
+                                                                               "operation":  "larger",
+                                                                               "value2":  5000
+                                                                           }
+                                                                       ]
+                                                        }
+                                     },
+                      "name":  "Neto \u003e 5000",
+                      "type":  "n8n-nodes-base.if",
+                      "typeVersion":  1,
+                      "position":  [
+                                       650,
+                                       100
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Notificar a Telegram/WhatsApp"
+                  },
+                  {
+                      "parameters":  {
+
+                                     },
+                      "name":  "Notificar (Mock)",
+                      "type":  "n8n-nodes-base.noOp",
+                      "typeVersion":  1,
+                      "position":  [
+                                       850,
+                                       80
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Enviar resumen por Telegram/WhatsApp"
+                  },
+                  {
+                      "parameters":  {
+                                         "amount":  120,
+                                         "unit":  "minutes"
+                                     },
+                      "name":  "Wait 120m",
+                      "type":  "n8n-nodes-base.wait",
+                      "typeVersion":  1.1,
+                      "position":  [
+                                       650,
+                                       300
+                                   ],
+                      "webhookId":  "wait-120m-calc"
+                  },
+                  {
+                      "parameters":  {
+                                         "conditions":  {
+                                                            "string":  [
+                                                                           {
+                                                                               "value1":  "={{ $json.status }}",
+                                                                               "value2":  "calculadora_completa"
+                                                                           }
+                                                                       ]
+                                                        }
+                                     },
+                      "name":  "Verificar Form",
+                      "type":  "n8n-nodes-base.if",
+                      "typeVersion":  1,
+                      "position":  [
+                                       850,
+                                       300
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Verificar si envió form"
+                  },
+                  {
+                      "parameters":  {
+
+                                     },
+                      "name":  "Secuencia B Msj 1",
+                      "type":  "n8n-nodes-base.noOp",
+                      "typeVersion":  1,
+                      "position":  [
+                                       1050,
+                                       280
+                                   ],
+                      "notesInFlow":  true,
+                      "notes":  "Si NO envió form -\u003e Secuencia B"
+                  }
+              ],
+    "connections":  {
+                        "Webhook":  {
+                                        "main":  [
+                                                     [
+                                                         {
+                                                             "node":  "Google Sheets / Airtable (Placeholder)",
+                                                             "type":  "main",
+                                                             "index":  0
+                                                         }
+                                                     ]
+                                                 ]
+                                    },
+                        "Google Sheets / Airtable (Placeholder)":  {
+                                                                       "main":  [
+                                                                                    [
+                                                                                        {
+                                                                                            "node":  "Neto \u003e 5000",
+                                                                                            "type":  "main",
+                                                                                            "index":  0
+                                                                                        },
+                                                                                        {
+                                                                                            "node":  "Wait 120m",
+                                                                                            "type":  "main",
+                                                                                            "index":  0
+                                                                                        }
+                                                                                    ]
+                                                                                ]
+                                                                   },
+                        "Neto \u003e 5000":  {
+                                                 "main":  [
+                                                              [
+                                                                  {
+                                                                      "node":  "Notificar (Mock)",
+                                                                      "type":  "main",
+                                                                      "index":  0
+                                                                  }
+                                                              ]
+                                                          ]
+                                             },
+                        "Wait 120m":  {
+                                          "main":  [
+                                                       [
+                                                           {
+                                                               "node":  "Verificar Form",
+                                                               "type":  "main",
+                                                               "index":  0
+                                                           }
+                                                       ]
+                                                   ]
+                                      },
+                        "Verificar Form":  {
+                                               "main":  [
+                                                            [
+                                                                {
+                                                                    "node":  "Secuencia B Msj 1",
+                                                                    "type":  "main",
+                                                                    "index":  0
+                                                                }
+                                                            ]
+                                                        ]
+                                           }
+                    },
+    "settings":  {
+
+                 }
+}

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KONA — Tu diagnóstico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,800;0,900;1,800&family=Barlow:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:#000000;--off:#0c0c0c;--dark:#141414;--border:#2a2a2a;
+    --mid:#505050;--grey:#848484;--light:#b8b8b8;--white:#f0f0eb;--pure:#fff;
+    --red:#e8320a;--red-d:#8c1e00;--green:#22c55e;
+    --dp:'Barlow Condensed',sans-serif;--bd:'Barlow',sans-serif;--mn:'DM Mono',monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;background:#000000;}
+  body{background:var(--black);color:var(--white);font-family:var(--bd);font-weight:300;min-height:100vh;overflow-x:hidden;cursor:crosshair;}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.016) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.016) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+  body::after{content:'';position:fixed;top:-2px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--red),transparent);animation:scan 6s linear infinite;pointer-events:none;z-index:1;opacity:.35;}
+  @keyframes scan{0%{top:-2px;}100%{top:100vh;}}
+
+  /* TOPBAR */
+  .topbar{border-bottom:1px solid var(--border);display:flex;align-items:stretch;height:52px;background:var(--black);position:sticky;top:0;z-index:10;}
+  .t-logo{display:flex;align-items:center;padding:0 28px;border-right:1px solid var(--border);gap:12px;cursor:crosshair;}
+  .logo-k{font-family:var(--dp);font-weight:900;font-size:1.6rem;letter-spacing:.06em;color:var(--pure);line-height:1;}
+  .logo-sep{width:1px;height:20px;background:var(--border);}
+  .logo-sub{font-family:var(--mn);font-size:.42rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mid);}
+  .t-tag{display:flex;align-items:center;padding:0 20px;border-right:1px solid var(--border);font-family:var(--mn);font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);}
+  .t-right{margin-left:auto;display:flex;align-items:center;gap:8px;padding:0 20px;font-family:var(--mn);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);}
+  .pulse{width:5px;height:5px;border-radius:50%;background:var(--red);box-shadow:0 0 6px var(--red);animation:blink 2s ease-in-out infinite;flex-shrink:0;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+
+  /* PROGRESS */
+  .progress{display:flex;border-bottom:1px solid var(--border);background:var(--off);position:relative;z-index:2;}
+  .p-step{flex:1;padding:14px 20px;display:flex;align-items:center;gap:10px;border-right:1px solid var(--border);}
+  .p-step:last-child{border-right:none;}
+  .p-num{font-family:var(--mn);font-size:.5rem;width:22px;height:22px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mid);flex-shrink:0;}
+  .p-step.done .p-num{border-color:var(--green);color:var(--green);}
+  .p-step.active .p-num{border-color:var(--red);color:var(--red);background:rgba(232,50,10,.08);}
+  .p-label{font-family:var(--mn);font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);}
+  .p-step.done .p-label{color:var(--grey);}
+  .p-step.active .p-label{color:var(--light);}
+  @media(max-width:580px){.progress{flex-direction:column;}.p-step{border-right:none;border-bottom:1px solid var(--border);}}
+
+  /* LAYOUT */
+  .wrap{position:relative;z-index:2;max-width:780px;margin:0 auto;padding:0 24px;}
+
+  /* HEADER */
+  .page-header{padding:52px 0 44px;border-bottom:1px solid var(--border);margin-bottom:44px;}
+  .s-tag{font-family:var(--mn);font-size:.48rem;letter-spacing:.22em;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+  .s-tag::after{content:'';flex:0 0 36px;height:1px;background:var(--red-d);}
+  h1{font-family:var(--dp);font-weight:900;font-size:clamp(2.4rem,6vw,4.2rem);text-transform:uppercase;line-height:.9;letter-spacing:-.02em;color:var(--pure);margin-bottom:14px;}
+  h1 em{font-style:italic;color:var(--red);display:block;}
+  .h-sub{font-size:.92rem;color:var(--grey);line-height:1.7;max-width:520px;}
+
+  /* VSL */
+  .vsl-wrap{margin-bottom:4px;}
+  .vsl-label{font-family:var(--mn);font-size:.46rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mid);margin-bottom:8px;display:block;}
+  .vsl-player{width:100%;aspect-ratio:16/9;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+  .vsl-player iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+  .vsl-placeholder{text-align:center;}
+  .vsl-icon{font-family:var(--dp);font-weight:900;font-size:3.5rem;color:var(--border);margin-bottom:12px;}
+  .vsl-ph-text{font-family:var(--mn);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);}
+  .vsl-note{padding:14px 18px;background:var(--off);border:1px solid var(--border);border-top:none;font-family:var(--mn);font-size:.48rem;letter-spacing:.08em;color:var(--mid);display:flex;align-items:center;gap:10px;margin-bottom:44px;}
+  .vsl-note strong{color:var(--grey);}
+
+  /* FORM */
+  .form-title{font-family:var(--dp);font-weight:700;font-size:1.1rem;letter-spacing:.1em;text-transform:uppercase;color:var(--light);margin-bottom:4px;}
+  .form-desc{font-size:.86rem;color:var(--grey);line-height:1.6;margin-bottom:28px;}
+
+  .q-block{border:1px solid var(--border);margin-bottom:2px;background:var(--off);}
+  .q-hd{display:flex;align-items:center;border-bottom:1px solid var(--border);}
+  .q-num{font-family:var(--mn);font-size:.54rem;letter-spacing:.12em;color:var(--mid);padding:14px 18px;border-right:1px solid var(--border);min-width:52px;text-align:center;}
+  .q-label{font-family:var(--dp);font-weight:700;font-size:.86rem;letter-spacing:.1em;text-transform:uppercase;color:var(--white);padding:14px 20px;flex:1;}
+  .q-body{padding:22px 20px;}
+
+  input[type=text],textarea,select{width:100%;background:var(--black);border:1px solid var(--border);color:var(--white);font-family:var(--mn);font-size:.86rem;padding:13px 15px;outline:none;transition:border-color .15s;resize:none;cursor:text;-webkit-appearance:none;border-radius:0;}
+  input:focus,textarea:focus,select:focus{border-color:var(--red);}
+  select{cursor:crosshair;}
+  select option{background:var(--dark);}
+
+  .radio-group{display:flex;flex-direction:column;gap:6px;}
+  .radio-opt{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);cursor:crosshair;transition:all .14s;}
+  .radio-opt:hover{border-color:var(--mid);}
+  .radio-opt.sel{border-color:var(--red);background:rgba(232,50,10,.06);}
+  .radio-dot{width:14px;height:14px;border:1px solid var(--mid);flex-shrink:0;position:relative;}
+  .radio-opt.sel .radio-dot{border-color:var(--red);}
+  .radio-opt.sel .radio-dot::after{content:'';position:absolute;inset:3px;background:var(--red);}
+  .radio-text{font-family:var(--mn);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);}
+  .radio-opt.sel .radio-text{color:var(--light);}
+
+  .submit-btn{width:100%;padding:22px;background:var(--red);color:var(--pure);font-family:var(--dp);font-weight:900;font-size:1.05rem;letter-spacing:.24em;text-transform:uppercase;border:none;cursor:crosshair;margin-top:4px;transition:background .15s;margin-bottom:52px;}
+  .submit-btn:hover{background:#ff4a1d;}
+  .submit-btn:disabled{background:var(--mid);cursor:not-allowed;}
+
+  /* CALENDLY */
+  #calendly-section{display:none;margin-bottom:80px;}
+  .cal-banner{background:var(--green);padding:32px 36px;margin-bottom:2px;}
+  .cal-eye{font-family:var(--mn);font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.55);margin-bottom:10px;}
+  .cal-h{font-family:var(--dp);font-weight:900;font-size:2.6rem;text-transform:uppercase;line-height:.95;color:var(--black);}
+  .cal-body{background:var(--off);border:1px solid var(--border);padding:36px;}
+  .cal-sub{font-size:.92rem;color:var(--grey);line-height:1.75;margin-bottom:28px;}
+  .cal-btn{display:inline-block;padding:18px 36px;background:var(--red);color:var(--pure);font-family:var(--dp);font-weight:900;font-size:1rem;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;cursor:crosshair;transition:background .15s;}
+  .cal-btn:hover{background:#ff4a1d;}
+  .cal-note{font-family:var(--mn);font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);margin-top:14px;display:block;}
+
+  /* GUARANTEE */
+  .guarantee{border:1px solid var(--border);padding:28px 32px;background:var(--off);margin-bottom:80px;}
+  .g-title{font-family:var(--mn);font-size:.46rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mid);margin-bottom:12px;}
+  .g-text{font-size:.86rem;color:var(--grey);line-height:1.75;}
+  .g-text strong{color:var(--light);font-weight:400;}
+
+  footer{border-top:1px solid var(--border);display:flex;align-items:center;height:44px;position:relative;z-index:2;}
+  .fi{font-family:var(--mn);font-size:.42rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);padding:0 18px;height:100%;display:flex;align-items:center;border-right:1px solid var(--border);}
+  .fc{margin-left:auto;padding:0 18px;font-family:var(--mn);font-size:.42rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);}
+</style>
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', 'TU_PIXEL_ID');
+fbq('track', 'PageView');
+</script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="t-logo">
+    <div class="logo-k">KONA</div>
+    <div class="logo-sep"></div>
+    <div class="logo-sub">by Axel Laban Arzubi</div>
+  </div>
+  <div class="t-tag">Sistemas de IA para founders LATAM</div>
+  <div class="t-right"><span class="pulse"></span>Paso 2 de 3</div>
+</header>
+
+<div class="progress">
+  <div class="p-step done">
+    <div class="p-num">✓</div>
+    <div class="p-label">Registrado</div>
+  </div>
+  <div class="p-step active">
+    <div class="p-num">2</div>
+    <div class="p-label">Video + Aplicación</div>
+  </div>
+  <div class="p-step">
+    <div class="p-num">3</div>
+    <div class="p-label">Diagnóstico</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="page-header">
+    <div class="s-tag">Paso 2 de 3</div>
+    <h1>Ya diste<br>el primer paso.<br><em>Ahora mirá esto.</em></h1>
+    <p class="h-sub">Mirá el video antes de completar el formulario. Lo que dice cambia cómo respondés las preguntas.</p>
+  </div>
+
+  <!-- VSL -->
+  <div class="vsl-wrap">
+    <span class="vsl-label">Video · ~6 minutos</span>
+    <div class="vsl-player">
+      <!--
+        REEMPLAZAR con:
+        <iframe src="https://player.vimeo.com/video/TU_VIDEO_ID?color=e8320a&title=0&byline=0&portrait=0"
+                allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+      -->
+      <div class="vsl-placeholder">
+        <div class="vsl-icon">▷</div>
+        <div class="vsl-ph-text">Video pendiente de producción</div>
+      </div>
+    </div>
+    <div class="vsl-note">
+      ~6 minutos. <strong>Miralo completo antes de continuar.</strong>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-title">Tres preguntas</div>
+  <p class="form-desc">Tres preguntas para entender tu operación. Con eso defino si tiene sentido hablar.</p>
+
+  <div id="appForm">
+
+    <div class="q-block">
+      <div class="q-hd">
+        <div class="q-num">01</div>
+        <div class="q-label">¿A qué se dedica tu negocio?</div>
+      </div>
+      <div class="q-body">
+        <textarea id="q1" rows="3" placeholder="Describí brevemente qué hace tu empresa y cuál es tu rol…"></textarea>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-hd">
+        <div class="q-num">02</div>
+        <div class="q-label">¿Qué proceso repetitivo consume más horas en tu equipo hoy?</div>
+      </div>
+      <div class="q-body">
+        <textarea id="q2" rows="3" placeholder="Ej: seguimiento manual de leads, carga de datos, atención al cliente por WhatsApp…"></textarea>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-hd">
+        <div class="q-num">03</div>
+        <div class="q-label">¿Podés comprometer 4–5 horas semanales durante 8 semanas?</div>
+      </div>
+      <div class="q-body">
+        <div class="radio-group" id="q3-group">
+          <div class="radio-opt" onclick="selectRadio(this,'si')">
+            <div class="radio-dot"></div>
+            <span class="radio-text">Sí — puedo comprometer ese tiempo</span>
+          </div>
+          <div class="radio-opt" onclick="selectRadio(this,'probable')">
+            <div class="radio-dot"></div>
+            <span class="radio-text">Probable — depende del período</span>
+          </div>
+          <div class="radio-opt" onclick="selectRadio(this,'no')">
+            <div class="radio-dot"></div>
+            <span class="radio-text">No — ahora mismo no puedo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitApp()">Enviar aplicación →</button>
+
+  </div>
+
+  <!-- Calendly (post-submit) -->
+  <div id="calendly-section">
+    <div class="cal-banner">
+      <div class="cal-eye">✓ Aplicación recibida</div>
+      <div class="cal-h">Agendá tu<br>llamada ahora.</div>
+    </div>
+    <div class="cal-body">
+      <p class="cal-sub">
+        Trabajo con cuatro founders por mes — así puedo garantizar el resultado.
+        En la llamada analizamos tu operación. Si hay caso real, lo vemos juntos. Si no lo hay, te lo digo igual.
+      </p>
+      <a class="cal-btn" href="https://calendly.com/axellaban" target="_blank" onclick="fbq('trackCustom', 'LlamadaAgendada')">
+        Agendar llamada de diagnóstico →
+      </a>
+      <span class="cal-note">Si el horario no te queda, también podés escribirme por WhatsApp.</span>
+    </div>
+  </div>
+
+  <!-- Guarantee -->
+  <div class="guarantee">
+    <div class="g-title">Garantía del programa</div>
+    <p class="g-text">
+      Si llegamos a la semana ocho y no tenés un sistema funcionando en tu operación,
+      <strong>te devuelvo el 100% de lo que pagaste. Sin letra chica.</strong>
+      La garantía existe porque cuando el proceso está bien definido y el compromiso es real, funciona.
+    </p>
+  </div>
+
+</div>
+
+<footer>
+  <div class="fi">KONA · by Axel Laban Arzubi</div>
+  <div class="fc">© 2026</div>
+</footer>
+
+<script data-cfasync="false">
+  let selectedQ3 = '';
+
+  function selectRadio(el, val) {
+    document.getElementById('q3-group').querySelectorAll('.radio-opt').forEach(o => o.classList.remove('sel'));
+    el.classList.add('sel');
+    selectedQ3 = val;
+  }
+
+  async function submitApp() {
+    const q1 = document.getElementById('q1').value.trim();
+    const q2 = document.getElementById('q2').value.trim();
+    if (!q1 || !q2 || !selectedQ3) {
+      alert('Completá las tres preguntas para continuar.');
+      return;
+    }
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+
+    const wa = new URLSearchParams(window.location.search).get('wa') || '';
+    console.log('KONA aplicación:', { q1, q2, q3: selectedQ3, wa });
+    fbq('trackCustom', 'FormularioEnviado');
+    
+    // Webhook n8n — formulario aplicación
+    try {
+      await fetch('WEBHOOK_URL_FORMULARIO', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          wa: new URLSearchParams(window.location.search).get('wa') || '',
+          q1: q1,
+          q2: q2,
+          q3: selectedQ3,
+          fuente: 'formulario',
+          timestamp: new Date().toISOString()
+        })
+      });
+    } catch(e) { console.error('Webhook formulario error:', e); }
+
+    if (selectedQ3 === 'no') {
+      document.getElementById('appForm').innerHTML = `
+        <div style="padding:32px;background:var(--off);border:1px solid var(--border);border-left:3px solid var(--mid);text-align:center;margin-bottom:52px;">
+          <div style="font-family:var(--mn);font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);margin-bottom:14px;">Aplicación recibida</div>
+          <div style="font-family:var(--dp);font-weight:900;font-size:2rem;text-transform:uppercase;color:var(--pure);line-height:.95;margin-bottom:14px;">Gracias por<br>la honestidad.</div>
+          <p style="font-size:.88rem;color:var(--grey);line-height:1.75;max-width:420px;margin:0 auto;">
+            El programa requiere ese tiempo mínimo para que las implementaciones funcionen.
+            Cuando tu disponibilidad cambie, la puerta sigue abierta.
+          </p>
+        </div>`;
+      return;
+    }
+
+    document.getElementById('appForm').style.display = 'none';
+    document.getElementById('calendly-section').style.display = 'block';
+
+    // Avanzar progress bar al paso 3
+    const steps = document.querySelectorAll('.p-step');
+    steps[1].classList.remove('active');
+    steps[1].classList.add('done');
+    steps[1].querySelector('.p-num').textContent = '✓';
+    steps[2].classList.add('active');
+
+    document.getElementById('calendly-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>
