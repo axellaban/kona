@@ -342,6 +342,26 @@ fbq('track', 'PageView');
 
     document.getElementById('calendly-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+
+  // Escuchar eventos de Calendly
+  window.addEventListener('message', function(e) {
+    if (e.data.event && e.data.event.indexOf('calendly.event_scheduled') !== -1) {
+      console.log('Calendly: Evento agendado detectado.');
+      const wa = new URLSearchParams(window.location.search).get('wa') || '';
+      
+      // Webhook n8n — aviso de agendamiento real
+      fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook-test/6032da9b-66c3-41f8-9d2b-c382970e47b5', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          wa: wa,
+          evento: 'calendly_agendado',
+          payload: e.data.payload,
+          timestamp: new Date().toISOString()
+        })
+      }).catch(err => console.error('Error enviando webhook Calendly:', err));
+    }
+  });
 </script>
 </body>
 </html>
