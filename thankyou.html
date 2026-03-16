@@ -368,7 +368,7 @@ fbq('track', 'PageView');
       console.log('Calendly: Evento agendado detectado.');
       const wa = new URLSearchParams(window.location.search).get('wa') || '';
       
-      fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook-test/6032da9b-66c3-41f8-9d2b-c382970e47b5', {
+      fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/6032da9b-66c3-41f8-9d2b-c382970e47b5', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
