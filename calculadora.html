@@ -769,7 +769,7 @@ fbq('track', 'PageView');
 
     // Webhook n8n — guardar resultado calculadora
     try {
-      await fetch('WEBHOOK_URL_CALCULADORA', {
+      await fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-calculadora', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
