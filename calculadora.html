@@ -784,11 +784,17 @@ fbq('track', 'PageView');
       });
     } catch(e) { console.error('Webhook calculadora error:', e); }
 
+    // Mensaje de transición rápido antes de enviarlo al VSL
     document.querySelector('.cta-box').innerHTML = `
-      <span class="cta-eyebrow">✓ Solicitud recibida</span>
-      <div class="cta-title" style="font-size:2rem">Perfecto, ${name}.</div>
-      <p class="cta-sub" style="margin-bottom:0">Te contactamos por WhatsApp para coordinar el diagnóstico. Si no tiene sentido trabajar juntos, te lo decimos en la llamada.</p>
+      <div class="scan-ring" style="width:40px;height:40px;border-width:2px;margin: 0 auto 15px;"></div>
+      <div class="cta-title" style="font-size:1.5rem">Analizando tu caso, ${name}...</div>
+      <p class="cta-sub" style="margin-bottom:0">Preparando tu diagnóstico personalizado. Redirigiendo en 2 segundos...</p>
     `;
+
+    // Redirección automática a la ThankYou/VSL page
+    setTimeout(() => {
+      window.location.href = 'thankyou.html?wa=' + encodeURIComponent(wa) + '&name=' + encodeURIComponent(name);
+    }, 2000);
   }
 </script>
 
