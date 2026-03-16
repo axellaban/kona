@@ -243,7 +243,7 @@ fbq('track', 'PageView');
         Trabajo con cuatro founders por mes — así puedo garantizar el resultado.
         En la llamada analizamos tu operación. Si hay caso real, lo vemos juntos. Si no lo hay, te lo digo igual.
       </p>
-      <a class="cal-btn" href="https://calendly.com/axellaban" target="_blank" onclick="fbq('trackCustom', 'LlamadaAgendada')">
+      <a class="cal-btn" id="calBtn" href="https://calendly.com/axellaban" target="_blank" onclick="fbq('trackCustom', 'LlamadaAgendada')">
         Agendar llamada de diagnóstico →
       </a>
       <span class="cal-note">Si el horario no te queda, también podés escribirme por WhatsApp.</span>
@@ -329,6 +329,16 @@ fbq('track', 'PageView');
     steps[1].classList.add('done');
     steps[1].querySelector('.p-num').textContent = '✓';
     steps[2].classList.add('active');
+
+    // Dinamizar link de Calendly con el WA
+    const calBtn = document.getElementById('calBtn');
+    if (calBtn && wa) {
+      const url = new URL(calBtn.href);
+      // Calendly usa 'a1' habitualmente para campos personalizados, 
+      // o 'utm_source' etc. Usaremos 'a1' como estándar para el WA.
+      url.searchParams.append('a1', wa); 
+      calBtn.href = url.toString();
+    }
 
     document.getElementById('calendly-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }

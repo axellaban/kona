@@ -1,0 +1,122 @@
+{
+  "name": "KONA - 04 Calendly",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "kona-calendly",
+        "options": {}
+      },
+      "id": "webhook-calendly",
+      "name": "Webhook Calendly",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "kona-calendly"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "WhatsApp",
+              "value": "={{ $json.body.payload.questions_and_answers.find(q => q.question.includes('WhatsApp') || q.answer.includes('+'))?.answer || $json.query.a1 }}"
+            },
+            {
+              "name": "Fecha_Booking",
+              "value": "={{ $json.body.payload.event_start_time }}"
+            },
+            {
+              "name": "Status",
+              "value": "llamada_agendada"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "extract-calendly",
+      "name": "Extraer Datos Booking",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1LPgUQNf-_lZowkmlFYM0ryZgYPf7LLVYvdpCKj6i8o8",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "={{ $('Extraer Datos Booking').item.json.Status }}",
+            "Fecha_Booking": "={{ $('Extraer Datos Booking').item.json.Fecha_Booking }}"
+          }
+        },
+        "options": {
+          "key": "WhatsApp",
+          "keyValue": "={{ $('Extraer Datos Booking').item.json.WhatsApp }}"
+        }
+      },
+      "id": "update-sheet-booking",
+      "name": "Actualizar Status Booking",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {},
+      "id": "notify-booking",
+      "name": "Mensaje: ¡Bingo! Agendó",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "notesInFlow": true,
+      "notes": "Alerta a Telegram / Mail: Axel, agendaron"
+    }
+  ],
+  "connections": {
+    "Webhook Calendly": {
+      "main": [
+        [
+          {
+            "node": "Extraer Datos Booking",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer Datos Booking": {
+      "main": [
+        [
+          {
+            "node": "Actualizar Status Booking",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizar Status Booking": {
+      "main": [
+        [
+          {
+            "node": "Mensaje: ¡Bingo! Agendó",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}
