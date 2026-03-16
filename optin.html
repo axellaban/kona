@@ -76,7 +76,8 @@
   .cred-item-desc strong{color:var(--light);font-weight:400;}
 
   .author{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border:1px solid var(--border);background:var(--off);}
-  .author-av{width:38px;height:38px;flex-shrink:0;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--dp);font-weight:900;font-size:.9rem;color:var(--red);}
+  .author-av{width:38px;height:38px;flex-shrink:0;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--dp);font-weight:900;font-size:.9rem;color:var(--red);overflow:hidden;}
+  .author-av img{width:100%;height:100%;object-fit:cover;}
   .author-name{font-family:var(--dp);font-weight:800;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:var(--pure);margin-bottom:4px;}
   .author-bio{font-family:var(--mn);font-size:.4rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);line-height:1.65;}
 
@@ -185,7 +186,9 @@ fbq('track', 'PageView');
     </div>
 
     <div class="author">
-      <div class="author-av">AL</div>
+      <div class="author-av">
+        <img src="assets/axel.jpg" alt="Axel Laban Arzubi">
+      </div>
       <div>
         <div class="author-name">Axel Laban Arzubi</div>
         <div class="author-bio">
