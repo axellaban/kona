@@ -227,11 +227,12 @@ fbq('track', 'PageView');
 
     <div id="success">
       <div class="s-mark">✓</div>
-      <div class="s-h">Perfecto.</div>
-      <div class="s-sub">
-        Te mando la calculadora ahora mismo por WhatsApp.<br><br>
-        En las próximas 24 horas te contacto para ver si tiene sentido hablar.
-        Si no aplica, te lo digo directo.
+      <div class="s-h">¡WhatsApp Confirmado!</div>
+      <div class="s-sub" style="margin-bottom: 20px;">
+        Preparando tu entorno de diagnóstico...
+      </div>
+      <div class="s-sub" style="font-size: 0.8rem; opacity: 0.7;">
+        <em>Nota de Axel: Si después de usar la calculadora veo que tiene sentido que hablemos, te contacto. Si no aplica, te lo digo directo.</em>
       </div>
     </div>
   </div>
@@ -280,7 +281,10 @@ fbq('track', 'PageView');
 
     document.getElementById('formWrap').style.display = 'none';
     document.getElementById('success').style.display = 'block';
-    // window.location.href = 'calculadora-v4.html?wa=' + encodeURIComponent(wa);
+
+    setTimeout(() => {
+      window.location.href = 'calculadora.html?wa=' + encodeURIComponent(wa);
+    }, 2500);
   }
 </script>
 </body>
