@@ -121,9 +121,12 @@ n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
 n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
 (window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', 'TU_PIXEL_ID');
+fbq('init', '1274224524679737');
 fbq('track', 'PageView');
 </script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
+/></noscript>
 <!-- Calendly CSS & JS -->
 <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
 <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
@@ -211,23 +214,10 @@ fbq('track', 'PageView');
     <div class="q-block">
       <div class="q-hd">
         <div class="q-num">03</div>
-        <div class="q-label">¿Podés comprometer 4–5 horas semanales durante 8 semanas?</div>
+        <div class="q-label">¿Cuántas personas trabajan en tu operación y cuánto facturás por año?</div>
       </div>
       <div class="q-body">
-        <div class="radio-group" id="q3-group">
-          <div class="radio-opt" onclick="selectRadio(this,'si')">
-            <div class="radio-dot"></div>
-            <span class="radio-text">Sí — puedo comprometer ese tiempo</span>
-          </div>
-          <div class="radio-opt" onclick="selectRadio(this,'probable')">
-            <div class="radio-dot"></div>
-            <span class="radio-text">Probable — depende del período</span>
-          </div>
-          <div class="radio-opt" onclick="selectRadio(this,'no')">
-            <div class="radio-dot"></div>
-            <span class="radio-text">No — ahora mismo no puedo</span>
-          </div>
-        </div>
+        <textarea id="q3" rows="3" placeholder="Ej: equipo de 4 personas, facturación ~$200K anuales / 8 personas, facturación variable…"></textarea>
       </div>
     </div>
 
@@ -271,18 +261,11 @@ fbq('track', 'PageView');
 </footer>
 
 <script data-cfasync="false">
-  let selectedQ3 = '';
-
-  function selectRadio(el, val) {
-    document.getElementById('q3-group').querySelectorAll('.radio-opt').forEach(o => o.classList.remove('sel'));
-    el.classList.add('sel');
-    selectedQ3 = val;
-  }
-
   async function submitApp() {
     const q1 = document.getElementById('q1').value.trim();
     const q2 = document.getElementById('q2').value.trim();
-    if (!q1 || !q2 || !selectedQ3) {
+    const q3 = document.getElementById('q3').value.trim();
+    if (!q1 || !q2 || !q3) {
       alert('Completá las tres preguntas para continuar.');
       return;
     }
@@ -291,7 +274,7 @@ fbq('track', 'PageView');
     btn.textContent = 'Enviando…';
 
     const wa = new URLSearchParams(window.location.search).get('wa') || '';
-    console.log('KONA aplicación:', { q1, q2, q3: selectedQ3, wa });
+    console.log('KONA aplicación:', { q1, q2, q3, wa });
     fbq('trackCustom', 'FormularioEnviado');
     
     // Webhook n8n — formulario aplicación
@@ -300,33 +283,19 @@ fbq('track', 'PageView');
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          wa: new URLSearchParams(window.location.search).get('wa') || '',
+          wa: wa,
           q1: q1,
           q2: q2,
-          q3: selectedQ3,
+          q3: q3,
           fuente: 'formulario',
           timestamp: new Date().toISOString()
         })
       });
     } catch(e) { console.error('Webhook formulario error:', e); }
 
-    if (selectedQ3 === 'no') {
-      document.getElementById('appForm').innerHTML = `
-        <div style="padding:32px;background:var(--off);border:1px solid var(--border);border-left:3px solid var(--mid);text-align:center;margin-bottom:52px;">
-          <div style="font-family:var(--mn);font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mid);margin-bottom:14px;">Aplicación recibida</div>
-          <div style="font-family:var(--dp);font-weight:900;font-size:2rem;text-transform:uppercase;color:var(--pure);line-height:.95;margin-bottom:14px;">Gracias por<br>la honestidad.</div>
-          <p style="font-size:.88rem;color:var(--grey);line-height:1.75;max-width:420px;margin:0 auto;">
-            El programa requiere ese tiempo mínimo para que las implementaciones funcionen.
-            Cuando tu disponibilidad cambie, la puerta sigue abierta.
-          </p>
-        </div>`;
-      return;
-    }
-
     document.getElementById('appForm').style.display = 'none';
     document.getElementById('calendly-section').style.display = 'block';
 
-    // Avanzar progress bar al paso 3
     const steps = document.querySelectorAll('.p-step');
     steps[1].classList.remove('active');
     steps[1].classList.add('done');
@@ -337,8 +306,6 @@ fbq('track', 'PageView');
     const calBtn = document.getElementById('calBtn');
     if (calBtn && wa) {
       const url = new URL(calBtn.href);
-      // Calendly usa 'a1' habitualmente para campos personalizados, 
-      // o 'utm_source' etc. Usaremos 'a1' como estándar para el WA.
       url.searchParams.append('a1', wa); 
       calBtn.href = url.toString();
     }
