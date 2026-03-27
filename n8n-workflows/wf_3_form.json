@@ -1,18 +1,18 @@
 {
-  "name": "KONA - 04 Calendly",
+  "name": "KONA - 03 Formulario",
   "nodes": [
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "6032da9b-66c3-41f8-9d2b-c382970e47b5",
+        "path": "kona-form",
         "options": {}
       },
-      "id": "webhook-calendly",
-      "name": "Webhook Calendly",
+      "id": "webhook-form",
+      "name": "Webhook Formulario",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [250, 300],
-      "webhookId": "kona-calendly"
+      "webhookId": "kona-form"
     },
     {
       "parameters": {
@@ -21,22 +21,30 @@
           "string": [
             {
               "name": "WhatsApp",
-              "value": "={{ $json.body.payload.questions_and_answers.find(q => q.question.includes('WhatsApp') || q.answer.includes('+'))?.answer || $json.query.a1 }}"
+              "value": "={{ $json.body.wa.replace(/\\s+/g, '').replace(/[^0-9+]/g, '') }}"
             },
             {
-              "name": "Fecha_Booking",
-              "value": "={{ $json.body.payload.event_start_time }}"
+              "name": "Respuesta_Q1",
+              "value": "={{ $json.body.q1 }}"
+            },
+            {
+              "name": "Respuesta_Q2",
+              "value": "={{ $json.body.q2 }}"
+            },
+            {
+              "name": "Respuesta_Q3",
+              "value": "={{ $json.body.q3 }}"
             },
             {
               "name": "Status",
-              "value": "llamada_agendada"
+              "value": "formulario_enviado"
             }
           ]
         },
         "options": {}
       },
-      "id": "extract-calendly",
-      "name": "Extraer Datos Booking",
+      "id": "normalize-form",
+      "name": "Mapear Respuestas",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [450, 300]
@@ -57,60 +65,62 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "Status": "={{ $('Extraer Datos Booking').item.json.Status }}",
-            "Fecha_Booking": "={{ $('Extraer Datos Booking').item.json.Fecha_Booking }}"
+            "Status": "={{ $('Mapear Respuestas').item.json.Status }}",
+            "Respuesta_Q1": "={{ $('Mapear Respuestas').item.json.Respuesta_Q1 }}",
+            "Respuesta_Q2": "={{ $('Mapear Respuestas').item.json.Respuesta_Q2 }}",
+            "Respuesta_Q3": "={{ $('Mapear Respuestas').item.json.Respuesta_Q3 }}"
           }
         },
         "options": {
           "key": "WhatsApp",
-          "keyValue": "={{ $('Extraer Datos Booking').item.json.WhatsApp }}"
+          "keyValue": "={{ $('Mapear Respuestas').item.json.WhatsApp }}"
         }
       },
-      "id": "update-sheet-booking",
-      "name": "Actualizar Status Booking",
+      "id": "consolidate-lead",
+      "name": "Consolidar en Fila Principal",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
       "position": [650, 300]
     },
     {
       "parameters": {},
-      "id": "notify-booking",
-      "name": "Mensaje: ¡Bingo! Agendó",
+      "id": "notify-form",
+      "name": "Mensaje: Nuevo Agendamiento",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [850, 300],
       "notesInFlow": true,
-      "notes": "Alerta a Telegram / Mail: Axel, agendaron"
+      "notes": "Alerta a Telegram / Mail"
     }
   ],
   "connections": {
-    "Webhook Calendly": {
+    "Webhook Formulario": {
       "main": [
         [
           {
-            "node": "Extraer Datos Booking",
+            "node": "Mapear Respuestas",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Extraer Datos Booking": {
+    "Mapear Respuestas": {
       "main": [
         [
           {
-            "node": "Actualizar Status Booking",
+            "node": "Consolidar en Fila Principal",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Actualizar Status Booking": {
+    "Consolidar en Fila Principal": {
       "main": [
         [
           {
-            "node": "Mensaje: ¡Bingo! Agendó",
+            "node": "Mensaje: Nuevo Agendamiento",
             "type": "main",
             "index": 0
           }

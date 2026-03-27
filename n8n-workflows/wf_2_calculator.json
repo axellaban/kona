@@ -1,0 +1,295 @@
+{
+  "name": "KONA - 02 Calculadora",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "kona-calculadora",
+        "options": {}
+      },
+      "id": "webhook-calc",
+      "name": "Webhook Calculadora",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "kona-calc"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "WhatsApp",
+              "value": "={{ $json.body.wa.replace(/\\s+/g, '').replace(/[^0-9+]/g, '') }}"
+            },
+            {
+              "name": "Nombre",
+              "value": "={{ $json.body.name }}"
+            },
+            {
+              "name": "Proceso_Elegido",
+              "value": "={{ $json.body.proceso }}"
+            },
+            {
+              "name": "Status",
+              "value": "calculadora_completa"
+            },
+            {
+              "name": "Fecha_Calculadora",
+              "value": "={{ new Date().toISOString() }}"
+            }
+          ],
+          "number": [
+            {
+              "name": "Oportunidad_Neta",
+              "value": "={{ $json.body.netoAnual }}"
+            },
+            {
+              "name": "Costo_Directo",
+              "value": "={{ $json.body.directCost }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "normalize-calc",
+      "name": "Cargar Datos",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1LPgUQNf-_lZowkmlFYM0ryZgYPf7LLVYvdpCKj6i8o8",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "={{ $('Cargar Datos').item.json.Status }}",
+            "Nombre": "={{ $('Cargar Datos').item.json.Nombre }}",
+            "Proceso_Elegido": "={{ $('Cargar Datos').item.json.Proceso_Elegido }}",
+            "Oportunidad_Neta": "={{ $('Cargar Datos').item.json.Oportunidad_Neta }}",
+            "Fecha_Calculadora": "={{ $('Cargar Datos').item.json.Fecha_Calculadora }}"
+          }
+        },
+        "options": {
+          "key": "WhatsApp",
+          "keyValue": "={{ $('Cargar Datos').item.json.WhatsApp }}"
+        }
+      },
+      "id": "update-lead-calc",
+      "name": "Actualizar Fila Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $('Cargar Datos').item.json.Oportunidad_Neta }}",
+              "rightValue": 5000,
+              "operator": {
+                "type": "number",
+                "operation": "larger"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-high-value",
+      "name": "Oportunidad > 5000?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [850, 100]
+    },
+    {
+      "parameters": {},
+      "id": "hot-lead-alert",
+      "name": "Alerta Lead Caliente",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1050, 80],
+      "notesInFlow": true,
+      "notes": "Avisar a Axel por Telegram"
+    },
+    {
+      "parameters": {
+        "amount": 120,
+        "unit": "minutes"
+      },
+      "id": "wait-120m",
+      "name": "Esperar 120m",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "webhookId": "wait-120m-calc"
+    },
+    {
+      "parameters": {
+        "operation": "lookup",
+        "documentId": {
+          "__rl": true,
+          "value": "1LPgUQNf-_lZowkmlFYM0ryZgYPf7LLVYvdpCKj6i8o8",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "list"
+        },
+        "lookupColumn": "WhatsApp",
+        "lookupValue": "={{ $('Cargar Datos').item.json.WhatsApp }}",
+        "options": {}
+      },
+      "id": "recheck-calc",
+      "name": "Revisar Formulario",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "calculadora_completa",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-still-calc",
+      "name": "Si NO llenó Form",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {},
+      "id": "notify-calc-abandon",
+      "name": "Alerta Seguimiento",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1450, 200],
+      "notesInFlow": true,
+      "notes": "Avisarle a Axel de escribir"
+    }
+  ],
+  "connections": {
+    "Webhook Calculadora": {
+      "main": [
+        [
+          {
+            "node": "Cargar Datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cargar Datos": {
+      "main": [
+        [
+          {
+            "node": "Actualizar Fila Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizar Fila Sheet": {
+      "main": [
+        [
+          {
+            "node": "Oportunidad > 5000?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Esperar 120m",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Oportunidad > 5000?": {
+      "main": [
+        [
+          {
+            "node": "Alerta Lead Caliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar 120m": {
+      "main": [
+        [
+          {
+            "node": "Revisar Formulario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Revisar Formulario": {
+      "main": [
+        [
+          {
+            "node": "Si NO llenó Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Si NO llenó Form": {
+      "main": [
+        [
+          {
+            "node": "Alerta Seguimiento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

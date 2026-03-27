@@ -1,0 +1,291 @@
+{
+  "name": "KONA - 01 Optin",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "kona-optin",
+        "options": {}
+      },
+      "id": "webhook-optin",
+      "name": "Webhook Optin",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "kona-optin"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "WhatsApp",
+              "value": "={{ $json.body.wa.replace(/\\s+/g, '').replace(/[^0-9+]/g, '') }}"
+            },
+            {
+              "name": "Status",
+              "value": "optin"
+            },
+            {
+              "name": "Fecha_Optin",
+              "value": "={{ new Date().toISOString() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "normalize-optin",
+      "name": "Normalizar Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "operation": "lookup",
+        "documentId": {
+          "__rl": true,
+          "value": "1LPgUQNf-_lZowkmlFYM0ryZgYPf7LLVYvdpCKj6i8o8",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "list"
+        },
+        "lookupColumn": "WhatsApp",
+        "lookupValue": "={{ $json.WhatsApp }}",
+        "options": {}
+      },
+      "id": "check-gsheets-optin",
+      "name": "Buscar Lead Existente",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.WhatsApp }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "isEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-exists",
+      "name": "Si NO existe",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1LPgUQNf-_lZowkmlFYM0ryZgYPf7LLVYvdpCKj6i8o8",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "WhatsApp": "={{ $('Normalizar Data').item.json.WhatsApp }}",
+            "Status": "={{ $('Normalizar Data').item.json.Status }}",
+            "Fecha_Optin": "={{ $('Normalizar Data').item.json.Fecha_Optin }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "append-lead",
+      "name": "Crear Lead",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1050, 200]
+    },
+    {
+      "parameters": {
+        "amount": 60,
+        "unit": "minutes"
+      },
+      "id": "wait-60m",
+      "name": "Esperar 60m",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [1250, 200],
+      "webhookId": "wait-60m-optin"
+    },
+    {
+      "parameters": {
+        "operation": "lookup",
+        "documentId": {
+          "__rl": true,
+          "value": "1LPgUQNf-_lZowkmlFYM0ryZgYPf7LLVYvdpCKj6i8o8",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "list"
+        },
+        "lookupColumn": "WhatsApp",
+        "lookupValue": "={{ $('Normalizar Data').item.json.WhatsApp }}",
+        "options": {}
+      },
+      "id": "recheck-optin",
+      "name": "Re-chequear Estado",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1450, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "optin",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-still-optin",
+      "name": "Si sigue en optin",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1650, 200]
+    },
+    {
+      "parameters": {},
+      "id": "notify-optin-abandon",
+      "name": "Alerta a Telegram / Mail",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1850, 100],
+      "notesInFlow": true,
+      "notes": "Avisar a Axel que no completó la calcu"
+    }
+  ],
+  "connections": {
+    "Webhook Optin": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Data": {
+      "main": [
+        [
+          {
+            "node": "Buscar Lead Existente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Lead Existente": {
+      "main": [
+        [
+          {
+            "node": "Si NO existe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Si NO existe": {
+      "main": [
+        [
+          {
+            "node": "Crear Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear Lead": {
+      "main": [
+        [
+          {
+            "node": "Esperar 60m",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar 60m": {
+      "main": [
+        [
+          {
+            "node": "Re-chequear Estado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Re-chequear Estado": {
+      "main": [
+        [
+          {
+            "node": "Si sigue en optin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Si sigue en optin": {
+      "main": [
+        [
+          {
+            "node": "Alerta a Telegram / Mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}
