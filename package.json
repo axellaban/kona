@@ -1,0 +1,11 @@
+{
+  "name": "kona",
+  "version": "1.0.0",
+  "description": "KONA Funnel - Programa de automatización IA",
+  "scripts": {
+    "paperclip": "paperclipai run"
+  },
+  "dependencies": {
+    "paperclipai": "2026.325.0"
+  }
+}
