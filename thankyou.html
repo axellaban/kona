@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KONA — Tu diagnóstico</title>
+<meta name="description" content="Completá tu aplicación y agendá tu llamada de diagnóstico gratuita con Axel Laban Arzubi.">
+<meta property="og:title" content="KONA — Tu diagnóstico">
+<meta property="og:description" content="Completá tu aplicación y agendá tu llamada de diagnóstico gratuita.">
+<meta property="og:image" content="/assets/axel.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,800;0,900;1,800&family=Barlow:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -114,6 +121,7 @@
   footer{border-top:1px solid var(--border);display:flex;align-items:center;height:44px;position:relative;z-index:2;}
   .fi{font-family:var(--mn);font-size:.42rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);padding:0 18px;height:100%;display:flex;align-items:center;border-right:1px solid var(--border);}
   .fc{margin-left:auto;padding:0 18px;font-family:var(--mn);font-size:.42rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);}
+  :focus-visible{outline:2px solid var(--red);outline-offset:3px;}
 </style>
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -222,6 +230,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
     </div>
 
     <button class="submit-btn" id="submitBtn" onclick="submitApp()">Enviar aplicación →</button>
+    <p id="form-err" style="display:none;color:var(--red);margin-top:10px;font-size:.9rem;font-family:var(--mn);text-align:center;"></p>
 
   </div>
 
@@ -270,16 +279,18 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
       return;
     }
     const btn = document.getElementById('submitBtn');
+    const errEl = document.getElementById('form-err');
     btn.disabled = true;
     btn.textContent = 'Enviando…';
+    errEl.style.display = 'none';
 
     const wa = new URLSearchParams(window.location.search).get('wa') || '';
     console.log('KONA aplicación:', { q1, q2, q3, wa });
     fbq('trackCustom', 'FormularioEnviado');
-    
+
     // Webhook n8n — formulario aplicación
     try {
-      await fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-form', {
+      const res = await fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-form', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -291,7 +302,15 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
           timestamp: new Date().toISOString()
         })
       });
-    } catch(e) { console.error('Webhook formulario error:', e); }
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+    } catch(e) {
+      console.error('Webhook formulario error:', e);
+      btn.disabled = false;
+      btn.textContent = 'Enviar aplicación →';
+      errEl.textContent = 'Error al enviar. Intentá de nuevo.';
+      errEl.style.display = 'block';
+      return;
+    }
 
     document.getElementById('appForm').style.display = 'none';
     document.getElementById('calendly-section').style.display = 'block';

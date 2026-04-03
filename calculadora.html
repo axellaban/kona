@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diagnóstico de Deuda Operativa</title>
+<title>Diagnóstico de Deuda Operativa — KONA</title>
+<meta name="description" content="Calculá el costo real de operar tu negocio sin automatización. 7 variables, resultado en segundos.">
+<meta property="og:title" content="Diagnóstico de Deuda Operativa — KONA">
+<meta property="og:description" content="Calculá el costo real de operar tu negocio sin automatización.">
+<meta property="og:image" content="/assets/axel.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Diagnóstico de Deuda Operativa — KONA">
+<meta name="twitter:description" content="Calculá el costo real de operar tu negocio sin automatización.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Barlow:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -317,6 +325,7 @@
   .z-fuera    .zs-fill{background:#ff2020;}
   .z-fuera .zone-banner{animation:dangerPulse 2s ease-in-out infinite;}
   @keyframes dangerPulse{0%,100%{box-shadow:none;}50%{box-shadow:0 0 30px rgba(255,32,32,0.08),inset 0 0 30px rgba(255,32,32,0.03);}}
+  :focus-visible{outline:2px solid var(--red);outline-offset:3px;}
 </style>
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -383,9 +392,9 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
         <div class="block-status">Promedio</div>
       </div>
       <div class="block-body">
-        <div class="slider-val" id="hDisp">10 <span>horas / semana</span></div>
+        <div class="slider-val" id="hDisp"><span class="h-val">10</span> <span>horas / semana</span></div>
         <input type="range" id="hSlider" min="1" max="60" value="10"
-          oninput="document.getElementById('hDisp').innerHTML=this.value+' <span>horas / semana</span>'">
+          oninput="document.getElementById('hDisp').querySelector('.h-val').textContent=this.value">
         <div class="slider-marks"><span>1</span><span>15</span><span>30</span><span>45</span><span>60</span></div>
         <p class="hint">Promedio semanal de cada persona involucrada en el proceso.</p>
       </div>
@@ -565,8 +574,9 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
       <p class="cta-sub">Mapeamos tu workflow real, corregimos supuestos y definimos si existe un caso real de automatización. Sin pitch. Sin presión. Si no tiene sentido trabajar juntos, te lo digo en la llamada.</p>
       <div class="optin-row">
         <input type="text" class="optin-in" id="optName" placeholder="Tu nombre">
-        <button class="optin-btn" onclick="submitOptin()">Agendar diagnóstico →</button>
+        <button class="optin-btn" id="ctaSubmitBtn" onclick="submitOptin()">Agendar diagnóstico →</button>
       </div>
+      <p id="cta-err" style="display:none;color:var(--red);margin-top:10px;font-size:.9rem;font-family:var(--mn)"></p>
       <span class="optin-note">Sin spam · Solo coordinamos la llamada · Tu WhatsApp ya está registrado</span>
     </div>
 
@@ -579,6 +589,10 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
 </footer>
 
 <script data-cfasync="false">
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
   let p1 = 'tu proceso';
   let netoAnual = 0;
   let directCostGlobal = 0;
@@ -654,6 +668,9 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
   ];
 
   function run() {
+    const calcBtn = document.querySelector('.calc-btn');
+    if (calcBtn) { calcBtn.disabled = true; calcBtn.textContent = 'Calculando…'; }
+
     fbq('trackCustom', 'CalculadoraIniciada');
     const overlay = document.getElementById('scanOverlay');
     const fillEl  = document.getElementById('scanFill');
@@ -673,6 +690,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
       clearInterval(lInt);
       overlay.classList.remove('on');
       doCalc();
+      if (calcBtn) { calcBtn.disabled = false; calcBtn.textContent = 'Recalcular →'; }
     }, 1500);
   }
 
@@ -746,14 +764,15 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
 
     const vEl    = document.getElementById('veredicto');
     const ctaDyn = document.getElementById('cta-dynamic');
+    const p1safe = escHtml(p1);
     if (netoAnual === 0) {
       vEl.innerHTML      = '<strong>Diagnóstico:</strong> Con el volumen y costos actuales, el modelo no muestra ahorro neto atractivo bajo estos supuestos. Antes de automatizar, conviene estandarizar mejor el proceso o ganar más escala.';
       ctaDyn.textContent = '';
     } else if (netoAnual < 5000) {
-      vEl.innerHTML      = '<strong>Diagnóstico:</strong> En <em>"' + p1 + '"</em> ya existe una oportunidad, pero todavía es marginal con estos supuestos. Puede tener sentido si además mejora tiempos de respuesta o capacidad futura.';
+      vEl.innerHTML      = '<strong>Diagnóstico:</strong> En <em>"' + p1safe + '"</em> ya existe una oportunidad, pero todavía es marginal con estos supuestos. Puede tener sentido si además mejora tiempos de respuesta o capacidad futura.';
       ctaDyn.textContent = 'Oportunidad estimada según tus datos: ' + fmt(netoAnual) + ' / año';
     } else {
-      vEl.innerHTML      = '<strong>Diagnóstico:</strong> En <em>"' + p1 + '"</em> hay fricción suficiente para justificar un análisis serio. El modelo estima <strong>' + fmt(netoAnual) + ' de oportunidad neta anual</strong> sobre una carga operativa directa de <strong>' + fmt(directCost) + '</strong>.';
+      vEl.innerHTML      = '<strong>Diagnóstico:</strong> En <em>"' + p1safe + '"</em> hay fricción suficiente para justificar un análisis serio. El modelo estima <strong>' + fmt(netoAnual) + ' de oportunidad neta anual</strong> sobre una carga operativa directa de <strong>' + fmt(directCost) + '</strong>.';
       ctaDyn.textContent = 'Calculaste ' + fmt(directCost) + ' de costo operativo directo — en 30 min analizamos si es recuperable.';
     }
 
@@ -766,13 +785,18 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
   async function submitOptin() {
     const name = document.getElementById('optName').value.trim();
     if (!name) { document.getElementById('optName').focus(); return; }
+    const btn = document.getElementById('ctaSubmitBtn');
+    const errEl = document.getElementById('cta-err');
+    if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
+    if (errEl) errEl.style.display = 'none';
+
     const wa = new URLSearchParams(window.location.search).get('wa') || '';
     console.log('Lead calculadora:', { name, wa, p1, netoAnual, directCost: directCostGlobal });
     fbq('trackCustom', 'CalculadoraCompleta');
 
     // Webhook n8n — guardar resultado calculadora
     try {
-      await fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-calculadora', {
+      const res = await fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-calculadora', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -785,12 +809,19 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
           timestamp: new Date().toISOString()
         })
       });
-    } catch(e) { console.error('Webhook calculadora error:', e); }
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+    } catch(e) {
+      console.error('Webhook calculadora error:', e);
+      if (btn) { btn.disabled = false; btn.textContent = 'Continuar →'; }
+      if (errEl) { errEl.textContent = 'Error al enviar. Intentá de nuevo.'; errEl.style.display = 'block'; }
+      return;
+    }
 
     // Mensaje de transición rápido antes de enviarlo al VSL
+    const nameSafe = escHtml(name);
     document.querySelector('.cta-box').innerHTML = `
       <div class="scan-ring" style="width:40px;height:40px;border-width:2px;margin: 0 auto 15px;"></div>
-      <div class="cta-title" style="font-size:1.5rem">Analizando tu caso, ${name}...</div>
+      <div class="cta-title" style="font-size:1.5rem">Analizando tu caso, ${nameSafe}...</div>
       <p class="cta-sub" style="margin-bottom:0">Preparando tu diagnóstico personalizado. Redirigiendo en 2 segundos...</p>
     `;
 
