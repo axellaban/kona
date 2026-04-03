@@ -13,6 +13,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KONA — Diagnóstico de Automatización</title>
+<meta name="description" content="Descubrí cuánto te está costando operar sin automatización. Diagnóstico gratuito de deuda operacional para founders de LATAM.">
+<meta property="og:title" content="KONA — Diagnóstico de Automatización">
+<meta property="og:description" content="Calculá tu deuda operacional en 2 minutos. Diagnóstico gratuito para founders de LATAM.">
+<meta property="og:image" content="/assets/axel.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="KONA — Diagnóstico de Automatización">
+<meta name="twitter:description" content="Calculá tu deuda operacional en 2 minutos. Diagnóstico gratuito para founders de LATAM.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,800;0,900;1,800&family=Barlow:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -136,6 +144,7 @@
   footer{border-top:1px solid var(--border);display:flex;align-items:center;height:44px;position:relative;z-index:2;}
   .fi{font-family:var(--mn);font-size:.42rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);padding:0 18px;height:100%;display:flex;align-items:center;border-right:1px solid var(--border);}
   .fc{margin-left:auto;padding:0 18px;font-family:var(--mn);font-size:.42rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);}
+  :focus-visible{outline:2px solid var(--red);outline-offset:3px;}
 </style>
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -230,6 +239,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
       <input type="tel" id="wa" class="f-input" placeholder="+54 9 11 XXXX XXXX"
         onkeydown="if(event.key==='Enter')doSubmit()">
       <button class="f-btn" onclick="doSubmit()">Quiero mi diagnóstico gratuito →</button>
+      <p id="optin-err" style="display:none;color:var(--red);margin-top:8px;font-size:.9rem;font-family:var(--mn);text-align:center;"></p>
       <div class="f-note">
         Sin spam · Sin pitch de venta<br>
         Te mandamos la calculadora y coordinamos una llamada de 30 min si tiene sentido
@@ -278,12 +288,18 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
   async function doSubmit() {
     const wa = document.getElementById('wa').value.trim();
     if (!wa) { document.getElementById('wa').focus(); return; }
+    const btn = document.querySelector('.f-btn');
+    const errEl = document.getElementById('optin-err');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+    errEl.style.display = 'none';
+
     console.log('KONA optin:', { wa });
     fbq('track', 'Lead');
-    
+
     // Webhook n8n — guardar lead optin
     try {
-      await fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-optin', {
+      const res = await fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-optin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -292,7 +308,15 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"
           timestamp: new Date().toISOString()
         })
       });
-    } catch(e) { console.error('Webhook optin error:', e); }
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+    } catch(e) {
+      console.error('Webhook optin error:', e);
+      btn.disabled = false;
+      btn.textContent = 'Ver mi diagnóstico →';
+      errEl.textContent = 'Error al enviar. Intentá de nuevo.';
+      errEl.style.display = 'block';
+      return;
+    }
 
     document.getElementById('formWrap').style.display = 'none';
     document.getElementById('success').style.display = 'block';
