@@ -178,6 +178,54 @@ Import JSON files from `n8n-workflows/` into the n8n instance. Each workflow:
 
 Webhook base URL: `https://n8n-n8n.fu6abb.easypanel.host/webhook/`
 
+### Webhook Payload Specifications
+
+**POST `/webhook/kona-optin`** — sent by `optin.html`:
+```json
+{ "wa": "521XXXXXXXXXX", "fuente": "optin", "timestamp": "2026-01-01T00:00:00.000Z" }
+```
+
+**POST `/webhook/kona-calculadora`** — sent by `calculadora.html`:
+```json
+{
+  "name": "Nombre del lead",
+  "wa": "521XXXXXXXXXX",
+  "proceso": "Facturación",
+  "netoAnual": 48000,
+  "directCost": 72000,
+  "fuente": "calculadora",
+  "timestamp": "2026-01-01T00:00:00.000Z"
+}
+```
+
+**POST `/webhook/kona-form`** — sent by `thankyou.html`:
+```json
+{
+  "wa": "521XXXXXXXXXX",
+  "q1": "respuesta a pregunta 1",
+  "q2": "respuesta a pregunta 2",
+  "q3": "respuesta a pregunta 3",
+  "fuente": "formulario",
+  "timestamp": "2026-01-01T00:00:00.000Z"
+}
+```
+
+**POST `/webhook/<uuid>`** — Calendly tracking, sent by `thankyou.html` (fired by Calendly JS widget event).
+
+---
+
+## Meta Pixel Events
+
+| Page | Event | Trigger |
+|---|---|---|
+| `optin.html` | `PageView` | on load |
+| `optin.html` | `Lead` | on successful form submission |
+| `calculadora.html` | `PageView` | on load |
+| `calculadora.html` | `CalculadoraIniciada` (custom) | when `run()` is called |
+| `calculadora.html` | `CalculadoraCompleta` (custom) | on CTA form submit |
+| `thankyou.html` | `PageView` | on load |
+| `thankyou.html` | `FormularioEnviado` (custom) | on application form submit |
+
 ---
 
 ## WhatsApp Follow-up Scripts
@@ -188,7 +236,20 @@ Located in `whatsapp-scripts/`. Four templates targeting different lead behavior
 - `03-el-indeciso.txt` — Lead is hesitant / hasn't decided
 - `04-el-agendado.txt` — Lead booked a call (nurture sequence)
 
-Templates use `[nombre]`, `[monto]`, `[proceso]`, `[link]` as dynamic placeholders replaced by n8n.
+### Script Variable Mapping
+
+| Script | Placeholder | Source | Status |
+|---|---|---|---|
+| `01-el-fantasma.txt` | `[nombre]` | wf_1_optin — from opt-in data | ✓ |
+| `01-el-fantasma.txt` | `[link calculadora]` | hardcoded in workflow | ✓ |
+| `02-el-asustado.txt` | `[nombre]` | wf_2_calculator | ✓ |
+| `02-el-asustado.txt` | `[monto]` | wf_2_calculator — from `netoAnual` | ✓ |
+| `02-el-asustado.txt` | `[proceso]` | wf_2_calculator — from `proceso` field | ✓ |
+| `03-el-indeciso.txt` | `[nombre]` | wf_3_form | ✓ |
+| `03-el-indeciso.txt` | `[proceso]` | **not sent by thankyou.html** — must be looked up from calculator submission | ⚠ incomplete |
+| `04-el-agendado.txt` | `[nombre]` | wf_4_calendly | ✓ |
+| `04-el-agendado.txt` | `[día]` / `[hora]` | wf_4_calendly — from `event_start_time`, needs formatting | ⚠ needs parsing |
+| `04-el-agendado.txt` | `[link]` | hardcoded in workflow | ✓ |
 
 ---
 
