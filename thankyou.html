@@ -134,34 +134,6 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     animation: pulse 2s ease-in-out infinite;
   }
 
-  /* ── PROGRESS BAR ── */
-  .progress {
-    display: flex; border-bottom: 1px solid var(--border);
-    background: var(--card); position: relative; z-index: 2;
-  }
-  .p-step {
-    flex: 1; padding: 14px 20px;
-    display: flex; align-items: center; gap: 10px;
-    border-right: 1px solid var(--border);
-  }
-  .p-step:last-child { border-right: none; }
-  .p-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; width: 24px; height: 24px;
-    border: 1px solid var(--border-2); border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--dim); flex-shrink: 0; font-weight: 600;
-  }
-  .p-step.done .p-num { border-color: var(--green); color: var(--green); background: rgba(34,197,94,0.08); }
-  .p-step.active .p-num { border-color: var(--accent); color: var(--accent-2); background: rgba(232,50,10,0.08); }
-  .p-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim);
-  }
-  .p-step.done .p-label { color: var(--muted); }
-  .p-step.active .p-label { color: var(--text); }
-  @media(max-width:580px){ .progress { flex-direction: column; } .p-step { border-right: none; border-bottom: 1px solid var(--border); } }
-
   /* ── MAIN WRAP ── */
   .wrap {
     position: relative; z-index: 2;
@@ -214,49 +186,121 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 520px;
   }
 
-  /* ── VSL ── */
-  .vsl-wrap { margin-bottom: 8px; }
-  .vsl-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--dim); margin-bottom: 10px; display: block;
+  /* ── PROOF STACK ── */
+  .proof-stack { display: flex; flex-direction: column; gap: 24px; margin-bottom: 48px; }
+
+  /* Grupo (Operación / Equipo) */
+  .proof-group { display: flex; flex-direction: column; gap: 8px; }
+  .proof-group-head {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 4px;
   }
-  .vsl-player {
-    width: 100%; aspect-ratio: 16/9;
+  .proof-group-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--faint); white-space: nowrap;
+  }
+  .proof-group-line {
+    flex: 1; height: 1px;
+    background: linear-gradient(to right, var(--border-2), transparent);
+  }
+
+  /* Card base */
+  .proof-card {
+    --c: var(--accent-2);
     background: var(--card);
     border: 1px solid var(--border-2);
     border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden;
+    overflow: hidden;
+    opacity: 0; animation: fadeInUp 0.4s ease forwards;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    cursor: default;
   }
-  .vsl-player::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    opacity: 0.7;
+  .proof-card:hover {
+    border-color: color-mix(in oklab, var(--c) 40%, var(--border-2));
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px -8px color-mix(in oklab, var(--c) 18%, transparent);
   }
-  .vsl-player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; border-radius: 14px; }
-  .vsl-placeholder { text-align: center; }
-  .vsl-icon {
-    font-size: 52px; color: var(--border-2); margin-bottom: 14px;
-    font-weight: 900;
+
+  /* nth-child delays */
+  .proof-group:nth-child(1) .proof-card:nth-child(1){ animation-delay:.05s }
+  .proof-group:nth-child(1) .proof-card:nth-child(2){ animation-delay:.13s }
+  .proof-group:nth-child(2) .proof-card:nth-child(1){ animation-delay:.21s }
+  .proof-group:nth-child(2) .proof-card:nth-child(2){ animation-delay:.29s }
+
+  /* Caso propio — borde verde izquierdo */
+  .proof-card.own {
+    --c: var(--green);
+    border-left: 3px solid var(--green);
+    border-color: rgba(34,197,94,0.3);
   }
-  .vsl-ph-text {
+
+  .proof-card-hd {
+    display: flex; align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .proof-tag {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim);
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-2); padding: 12px 18px;
+    border-right: 1px solid var(--border); white-space: nowrap;
+    background: color-mix(in oklab, var(--accent-2) 5%, transparent);
   }
-  .vsl-note {
-    padding: 14px 20px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-top: none;
-    border-radius: 0 0 14px 14px;
+  .proof-card.own .proof-tag {
+    color: var(--green);
+    background: color-mix(in oklab, var(--green) 7%, transparent);
+  }
+  .proof-title {
+    font-size: 13px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--text); padding: 12px 18px; flex: 1;
+  }
+  .proof-body { padding: 20px 24px; }
+
+  /* Contexto — una línea */
+  .proof-context {
+    font-size: 12.5px; color: var(--dim);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; letter-spacing: 0.06em; color: var(--dim);
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 48px;
+    letter-spacing: 0.02em; line-height: 1.55;
+    margin-bottom: 14px;
   }
-  .vsl-note strong { color: var(--muted); }
+
+  /* Número grande */
+  .proof-number {
+    font-size: clamp(38px, 8vw, 56px);
+    font-weight: 900; letter-spacing: -0.04em; line-height: 1;
+    color: var(--c); margin-bottom: 10px;
+  }
+  .proof-number .proof-unit {
+    font-size: 13px; font-weight: 500;
+    color: var(--muted); letter-spacing: 0; margin-left: 6px;
+  }
+
+  /* Mecanismo — una oración */
+  .proof-mechanism {
+    font-size: 14px; color: var(--muted); line-height: 1.65;
+    margin-bottom: 18px;
+  }
+
+  /* Pills */
+  .proof-result { display: flex; gap: 6px; flex-wrap: wrap; }
+  .proof-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; letter-spacing: 0.03em;
+    padding: 5px 10px 5px 8px; border-radius: 999px;
+    background: color-mix(in oklab, var(--c) 9%, transparent);
+    border: 1px solid color-mix(in oklab, var(--c) 25%, transparent);
+    color: color-mix(in oklab, var(--c) 85%, var(--text));
+    display: flex; align-items: center; gap: 5px;
+  }
+  .proof-pill::before {
+    content: '·'; opacity: 0.6; font-size: 14px; line-height: 1;
+  }
+  .proof-pill.neutral {
+    --c: var(--faint);
+    background: var(--card-2);
+    border-color: var(--border-2);
+    color: var(--dim);
+  }
 
   /* ── FORM SECTION ── */
   .form-heading {
@@ -473,25 +517,10 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
   </a>
   <div class="topbar-right">
     <span class="topbar-dot"></span>
-    Paso 2 de 3
+    Diagnóstico gratuito
   </div>
 </header>
 
-<!-- PROGRESS -->
-<div class="progress">
-  <div class="p-step done">
-    <div class="p-num">✓</div>
-    <div class="p-label">Registrado</div>
-  </div>
-  <div class="p-step active">
-    <div class="p-num">2</div>
-    <div class="p-label">Video + Aplicación</div>
-  </div>
-  <div class="p-step">
-    <div class="p-num">3</div>
-    <div class="p-label">Diagnóstico</div>
-  </div>
-</div>
 
 <main class="wrap">
 
@@ -499,42 +528,110 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
   <div class="page-header">
     <div class="eyebrow">
       <span class="dot"></span>
-      Paso 2 de 3
+      Casos reales
     </div>
     <h1>
-      Ya diste el primer paso.
-      <span class="accent">Ahora mirá esto.</span>
+      Cuatro operaciones reales.
+      <span class="accent">El mismo problema que el tuyo.</span>
     </h1>
-    <p class="page-sub">Mirá el video antes de completar el formulario. Lo que dice cambia cómo respondés las preguntas.</p>
+    <p class="page-sub">Casos concretos — mismo punto de partida, distinto tipo de operación. Mirá cuál se parece más a la tuya.</p>
   </div>
 
   <!-- Línea vertical -->
   <div class="vline"></div>
 
-  <!-- VSL -->
-  <div class="vsl-wrap">
-    <span class="vsl-label">Video · ~6 minutos</span>
-    <div class="vsl-player">
-      <!--
-        REEMPLAZAR con:
-        <iframe src="https://player.vimeo.com/video/TU_VIDEO_ID?color=e8320a&title=0&byline=0&portrait=0"
-                allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-      -->
-      <div class="vsl-placeholder">
-        <div class="vsl-icon">▷</div>
-        <div class="vsl-ph-text">Video pendiente de producción</div>
+  <!-- PROOF STACK -->
+  <div class="proof-stack">
+
+    <div class="proof-group">
+
+      <!-- Caso 01: Posventa eCommerce -->
+      <div class="proof-card">
+        <div class="proof-card-hd">
+          <div class="proof-tag">Caso 01</div>
+          <div class="proof-title">Colchones y Sommiers top 3 en ventas de Mercado Libre</div>
+        </div>
+        <div class="proof-body">
+          <p class="proof-context">El equipo pasaba el día respondiendo WhatsApp de posventa. Todo manual, todo a persona.</p>
+          <div class="proof-number">85%<span class="proof-unit">sin intervención humana</span></div>
+          <p class="proof-mechanism">Conectamos una base de conocimiento a los datos vivos de operación. Cada cliente recibía info de su pedido específico. El 15% que necesitaba criterio fue a humano.</p>
+          <div class="proof-result">
+            <span class="proof-pill">1.250 consultas resueltas automáticamente/mes</span>
+            <span class="proof-pill neutral">Sin agregar headcount</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Caso 02: Ventas WhatsApp — borde verde -->
+      <div class="proof-card own">
+        <div class="proof-card-hd">
+          <div class="proof-tag">Caso 02</div>
+          <div class="proof-title">HolaVeggie ebook con ventas 24/7 100% por WhatsApp</div>
+        </div>
+        <div class="proof-body">
+          <p class="proof-context">El bot tenía más de 600 ventas pero estaba ciego: no podía medir nada de lo que pasaba adentro.</p>
+          <div class="proof-number">+40%<span class="proof-unit">conversión</span></div>
+          <p class="proof-mechanism">Incorporamos Human in the Loop para ver qué pasaba adentro. Mapeamos los puntos exactos de abandono y activamos recupero automático para los que cortaban sin comprar.</p>
+          <div class="proof-result">
+            <span class="proof-pill">Ventas recuperadas que se perdían en silencio</span>
+            <span class="proof-pill neutral">Probado en producción propia primero</span>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="vsl-note">
-      ~6 minutos. <strong>Miralo completo antes de continuar.</strong>
+
+    <div class="proof-group">
+
+      <!-- Caso 03: Flujo de contenido -->
+      <div class="proof-card">
+        <div class="proof-card-hd">
+          <div class="proof-tag">Caso 03</div>
+          <div class="proof-title">Dirección de marketing en SaaS B2B para creación de contenido</div>
+        </div>
+        <div class="proof-body">
+          <p class="proof-context">El equipo de contenido tenía cinco herramientas distintas y nadie sabía bien lo que hacía el otro.</p>
+          <div class="proof-number">12 hs<span class="proof-unit">/ semana recuperadas</span></div>
+          <p class="proof-mechanism">Construimos un flujo agéntico que integró research, calendarización y generación de contenido por canal. Cada paso le pasaba el contexto al siguiente. El equipo publicó con revisión humana.</p>
+          <div class="proof-result">
+            <span class="proof-pill">Research + calendario + creación por canal</span>
+            <span class="proof-pill neutral">Un solo flujo integrado</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Caso 04: Asistente ejecutivo reuniones B2B -->
+      <div class="proof-card">
+        <div class="proof-card-hd">
+          <div class="proof-tag">Caso 04</div>
+          <div class="proof-title">Consultora fintech, equipo comercial B2B con ciclos de venta largos</div>
+        </div>
+        <div class="proof-body">
+          <p class="proof-context">Antes de cada reunión, los comerciales llegaban sin contexto. Prepararse les tomaba una hora por meeting.</p>
+          <div class="proof-number">6 hs<span class="proof-unit">/ semana por comercial</span></div>
+          <p class="proof-mechanism">Un agente investigó el perfil completo antes de cada reunión y generó el brief con next steps automáticamente después.</p>
+          <div class="proof-result">
+            <span class="proof-pill">Cada reunión con contexto completo previo</span>
+            <span class="proof-pill neutral">Brief post-reunión generado automáticamente</span>
+          </div>
+        </div>
+      </div>
     </div>
+
   </div>
 
   <div class="vline-2"></div>
 
+  <!-- Guarantee -->
+  <div class="guarantee">
+    <div class="g-title">Trabajo 1:1 con cada dueño de operación</div>
+    <p class="g-text">
+      No delegás la implementación a un equipo que no conoce tu negocio.
+      <strong>Si no encontramos un caso concreto de automatización, te lo digo yo primero.</strong>
+    </p>
+  </div>
+
   <!-- FORM -->
-  <div class="form-heading">Tres preguntas</div>
-  <p class="form-desc">Tres preguntas para entender tu operación. Con eso defino si tiene sentido hablar.</p>
+  <div class="form-heading">Tres preguntas. Menos de 3 minutos.</div>
 
   <div id="appForm">
 
@@ -561,14 +658,14 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     <div class="q-block">
       <div class="q-hd">
         <div class="q-num">03</div>
-        <div class="q-label">¿Cuántas personas trabajan en tu operación y cuánto facturás por año?</div>
+        <div class="q-label">¿Tamaño del equipo y volumen de operación?</div>
       </div>
       <div class="q-body">
-        <textarea id="q3" rows="3" placeholder="Ej: equipo de 4 personas, facturación ~$200K anuales / 8 personas, facturación variable…"></textarea>
+        <textarea id="q3" rows="3" placeholder="Ej: 5 personas, facturamos ~$300K/año · o: equipo de 2, operamos 200 pedidos/mes"></textarea>
       </div>
     </div>
 
-    <button class="submit-btn" id="submitBtn" onclick="submitApp()">Enviar aplicación →</button>
+    <button class="submit-btn" id="submitBtn" onclick="submitApp()">Preparar mi diagnóstico →</button>
     <p id="form-err" style="display:none;color:var(--accent);margin-top:10px;font-size:.9rem;font-family:'JetBrains Mono',monospace;text-align:center;"></p>
 
   </div>
@@ -580,26 +677,13 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
       <div class="cal-h">Agendá tu<br>llamada ahora.</div>
     </div>
     <div class="cal-body">
-      <p class="cal-sub">
-        Trabajo con cuatro founders por mes — así puedo garantizar el resultado.
-        En la llamada analizamos tu operación. Si hay caso real, lo vemos juntos. Si no lo hay, te lo digo igual.
-      </p>
+      <p class="cal-sub">Trabajo con cuatro operaciones por mes, así puedo garantizar el resultado.</p>
       <a class="cal-btn" id="calBtn" href="https://calendly.com/axellaban/30min" target="_blank" onclick="trackCalendlyClick()">
         Agendar llamada de diagnóstico →
       </a>
-      <span class="cal-note">Si el horario no te queda, también podés escribirme por WhatsApp.</span>
     </div>
   </div>
 
-  <!-- Guarantee -->
-  <div class="guarantee">
-    <div class="g-title">Garantía del programa</div>
-    <p class="g-text">
-      Si llegamos a la semana ocho y no tenés un sistema funcionando en tu operación,
-      <strong>te devuelvo el 100% de lo que pagaste. Sin letra chica.</strong>
-      La garantía existe porque cuando el proceso está bien definido y el compromiso es real, funciona.
-    </p>
-  </div>
 
 </main>
 
@@ -651,12 +735,6 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
 
     document.getElementById('appForm').style.display = 'none';
     document.getElementById('calendly-section').style.display = 'block';
-
-    const steps = document.querySelectorAll('.p-step');
-    steps[1].classList.remove('active');
-    steps[1].classList.add('done');
-    steps[1].querySelector('.p-num').textContent = '✓';
-    steps[2].classList.add('active');
 
     const calBtn = document.getElementById('calBtn');
     if (calBtn && wa) {
