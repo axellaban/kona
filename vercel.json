@@ -1,6 +1,8 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/optin.html" }
+    { "source": "/", "destination": "/optin.html" },
+    { "source": "/calculadora", "destination": "/calculadora.html" },
+    { "source": "/thankyou", "destination": "/thankyou.html" }
   ],
   "headers": [
     {
