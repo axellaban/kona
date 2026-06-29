@@ -1296,9 +1296,6 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
       if (!res.ok) throw new Error('HTTP ' + res.status);
     } catch(e) {
       console.error('Webhook calculadora error:', e);
-      if (btn) { btn.disabled = false; btn.textContent = 'Continuar →'; }
-      if (errEl) { errEl.textContent = 'Error al enviar. Intentá de nuevo.'; errEl.style.display = 'block'; }
-      return;
     }
 
     // Mensaje de transición rápido antes de enviarlo al VSL
@@ -1312,7 +1309,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     sessionStorage.setItem('a13i_name', name);
 
     setTimeout(() => {
-      window.location.href = '/thankyou';
+      window.location.href = 'thankyou.html';
     }, 2000);
   }
 </script>

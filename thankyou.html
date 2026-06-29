@@ -610,7 +610,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
       <div class="bridge-eye">¿Llegaste sin pasar por la calculadora?</div>
       <div class="bridge-title">Calculá tu número exacto en 2 minutos.</div>
       <p class="bridge-sub">La calculadora te muestra, con tus datos, cuánto te cuesta hoy operar a mano. Es el mejor punto de partida para la Sesión de Mapeo Operativo.</p>
-      <a class="bridge-btn" href="/calculadora">Ir a la calculadora →</a>
+      <a class="bridge-btn" href="calculadora.html">Ir a la calculadora →</a>
       <div class="bridge-or">o dejanos tu WhatsApp y coordinamos igual</div>
       <div class="bridge-wa-row">
         <input type="tel" id="bridgeWa" class="bridge-input" placeholder="+54 9 11 XXXX XXXX">
@@ -850,11 +850,6 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
       if (!res.ok) throw new Error('HTTP ' + res.status);
     } catch(e) {
       console.error('Webhook formulario error:', e);
-      btn.disabled = false;
-      btn.textContent = 'Preparar mi Sesión de Mapeo Operativo →';
-      errEl.textContent = 'Error al enviar. Intentá de nuevo.';
-      errEl.style.display = 'block';
-      return;
     }
 
     document.getElementById('appForm').style.display = 'none';

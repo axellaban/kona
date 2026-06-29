@@ -508,11 +508,6 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
       if (!res.ok) throw new Error('HTTP ' + res.status);
     } catch(e) {
       console.error('Webhook error:', e);
-      btn.disabled = false;
-      btn.textContent = 'Calcular con mis números →';
-      errEl.textContent = 'Error al enviar. Intentá de nuevo.';
-      errEl.style.display = 'block';
-      return;
     }
 
     sessionStorage.setItem('a13i_wa', wa);
@@ -521,7 +516,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     document.getElementById('success').style.display = 'block';
 
     setTimeout(() => {
-      window.location.href = '/calculadora';
+      window.location.href = 'calculadora.html';
     }, 2500);
   }
 </script>
