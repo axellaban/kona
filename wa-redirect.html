@@ -331,7 +331,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
   </a>
 
   <div class="countdown-wrap" id="countdownWrap">
-    Abriendo WhatsApp en <span id="countdown-num">5</span> segundos…
+    Abriendo WhatsApp en <span id="countdown-num">6</span> segundos…
   </div>
 
   <!-- Vista previa del mensaje -->
@@ -447,7 +447,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
   });
 
   // ── Countdown ─────────────────────────────────────────────────────────────
-  let countdownVal = 5;
+  let countdownVal = 6;
   let countdownTimer = null;
 
   function clearCountdown() {
@@ -468,7 +468,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
       clearCountdown();
       fbq('trackCustom', 'CountdownCompletado', { proceso, costoAnual });
       gtag('event', 'countdown_completado');
-      window.open(waLink, '_blank', 'noopener');
+      window.location.href = waLink;
     }
   }
 
