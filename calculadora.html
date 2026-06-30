@@ -850,6 +850,45 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     <div class="block">
       <div class="block-hd">
         <div class="block-num">02</div>
+        <div class="block-title">Rubro de tu negocio</div>
+        <div class="block-status">Seleccioná uno</div>
+      </div>
+      <div class="block-body">
+        <div class="tags" id="tagsRubro">
+          <div class="tag" onclick="selRubro(this,'eCommerce')">eCommerce</div>
+          <div class="tag" onclick="selRubro(this,'Servicios B2B')">Servicios B2B</div>
+          <div class="tag" onclick="selRubro(this,'Logística / Distribución')">Logística / Distribución</div>
+          <div class="tag" onclick="selRubro(this,'SaaS / Tech')">SaaS / Tech</div>
+          <div class="tag" onclick="selRubro(this,'Agencia')">Agencia</div>
+          <div class="tag" onclick="selRubro(this,'Retail / Franquicias')">Retail / Franquicias</div>
+          <div class="tag" onclick="selRubro(this,'Salud / Bienestar')">Salud / Bienestar</div>
+          <div class="tag" onclick="selRubro(this,'Educación / Formación')">Educación / Formación</div>
+          <div class="tag" onclick="selRubro(this,'Otro')">Otro</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd">
+        <div class="block-num">03</div>
+        <div class="block-title">Principal cuello de botella</div>
+        <div class="block-status">El que más duele</div>
+      </div>
+      <div class="block-body">
+        <div class="tags" id="tagsCuello">
+          <div class="tag" onclick="selCuello(this,'Alto volumen de trabajo manual')">Alto volumen de trabajo manual</div>
+          <div class="tag" onclick="selCuello(this,'Muchos errores y retrabajo')">Muchos errores y retrabajo</div>
+          <div class="tag" onclick="selCuello(this,'Tiempos de respuesta lentos')">Tiempos de respuesta lentos</div>
+          <div class="tag" onclick="selCuello(this,'Sin visibilidad del proceso')">Sin visibilidad del proceso</div>
+          <div class="tag" onclick="selCuello(this,'Dependencia de personas clave')">Dependencia de personas clave</div>
+          <div class="tag" onclick="selCuello(this,'Escalabilidad limitada')">Escalabilidad limitada</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-hd">
+        <div class="block-num">04</div>
         <div class="block-title">Horas semanales por persona</div>
         <div class="block-status">Promedio</div>
       </div>
@@ -864,7 +903,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
 
     <div class="block">
       <div class="block-hd">
-        <div class="block-num">03</div>
+        <div class="block-num">05</div>
         <div class="block-title">Costo por hora (fully-loaded)</div>
         <div class="block-status">USD</div>
       </div>
@@ -879,7 +918,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
 
     <div class="block">
       <div class="block-hd">
-        <div class="block-num">04</div>
+        <div class="block-num">06</div>
         <div class="block-title">Cantidad de personas involucradas</div>
         <div class="block-status">Equipo actual</div>
       </div>
@@ -893,7 +932,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
 
     <div class="block">
       <div class="block-hd">
-        <div class="block-num">05</div>
+        <div class="block-num">07</div>
         <div class="block-title">Tasa de errores / retrasos</div>
         <div class="block-status">Tasa actual</div>
       </div>
@@ -1076,6 +1115,8 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
   }
 
   let p1 = 'tu proceso';
+  let rubro1 = '';
+  let cuello1 = '';
   let netoAnual = 0;
   let directCostGlobal = 0;
 
@@ -1087,6 +1128,16 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
   }
   function clearTags() {
     document.getElementById('tags1').querySelectorAll('.tag').forEach(t => t.classList.remove('on'));
+  }
+  function selRubro(el, val) {
+    document.getElementById('tagsRubro').querySelectorAll('.tag').forEach(t => t.classList.remove('on'));
+    el.classList.add('on');
+    rubro1 = val;
+  }
+  function selCuello(el, val) {
+    document.getElementById('tagsCuello').querySelectorAll('.tag').forEach(t => t.classList.remove('on'));
+    el.classList.add('on');
+    cuello1 = val;
   }
   function toggleAdv() {
     const d = document.getElementById('adv');
@@ -1272,37 +1323,39 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     if (typeof trackResultadosVistos === 'function') trackResultadosVistos();
   }
 
-  // ── Guard: si no hay WA/nombre en sessionStorage, mostrar mini-optin antes de revelar resultados ──
+  // ── Guard: pide WA (y nombre si falta) justo antes de mostrar resultados ──
+  // Se inserta solo si no hay a13i_wa en sessionStorage
   (function() {
-    const wa     = sessionStorage.getItem('a13i_wa');
-    const nombre = sessionStorage.getItem('a13i_nombre');
-    if (!wa || !nombre) {
-      // Insertar mini-optin bloqueante antes del botón Calcular
-      const calcBtn = document.querySelector('.calc-btn');
-      if (calcBtn) {
-        const guard = document.createElement('div');
-        guard.id = 'guardOptin';
-        guard.style.cssText = 'background:var(--card);border:1px solid var(--border-2);border-radius:14px;padding:24px;margin-bottom:16px;display:none;';
-        guard.innerHTML = `
-          <p style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent-2);margin-bottom:14px;">Para ver tus resultados</p>
-          <input type="text" id="guardNombre" class="f-input" placeholder="Tu nombre" style="margin-bottom:10px;background:var(--card-2);border:1px solid var(--border-2);border-radius:10px;color:var(--text);font-size:15px;padding:14px 16px;width:100%;outline:none;" autocomplete="given-name">
-          <input type="tel" id="guardWa" class="f-input" placeholder="Tu WhatsApp (+54 9 11...)" style="margin-bottom:10px;background:var(--card-2);border:1px solid var(--border-2);border-radius:10px;color:var(--text);font-size:15px;padding:14px 16px;width:100%;outline:none;" autocomplete="tel">
-          <button onclick="saveGuardData()" style="width:100%;background:var(--accent);border:none;border-radius:10px;color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;">Ver mis resultados →</button>
-        `;
-        calcBtn.parentNode.insertBefore(guard, calcBtn);
-      }
-    }
+    if (sessionStorage.getItem('a13i_wa')) return; // ya tiene WA, no insertar
+
+    const calcBtn = document.querySelector('.calc-btn');
+    if (!calcBtn) return;
+
+    const tieneNombre = !!sessionStorage.getItem('a13i_nombre');
+
+    const guard = document.createElement('div');
+    guard.id = 'guardOptin';
+    guard.style.cssText = 'background:var(--card);border:1px solid var(--border-2);border-left:3px solid var(--accent);border-radius:0 14px 14px 0;padding:24px;margin-bottom:16px;display:none;';
+    guard.innerHTML = `
+      <p style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent-2);margin-bottom:14px;">Para ver tus resultados</p>
+      ${!tieneNombre ? `<input type="text" id="guardNombre" placeholder="Tu nombre" style="display:block;margin-bottom:10px;background:var(--card-2);border:1px solid var(--border-2);border-radius:10px;color:var(--text);font-size:15px;padding:14px 16px;width:100%;outline:none;box-sizing:border-box;" autocomplete="given-name">` : ''}
+      <input type="tel" id="guardWa" placeholder="Tu WhatsApp (+54 9 11...)" style="display:block;margin-bottom:10px;background:var(--card-2);border:1px solid var(--border-2);border-radius:10px;color:var(--text);font-size:15px;padding:14px 16px;width:100%;outline:none;box-sizing:border-box;" autocomplete="tel">
+      <button onclick="saveGuardData()" style="width:100%;background:var(--accent);border:none;border-radius:10px;color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;box-sizing:border-box;">Ver mis resultados →</button>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);margin-top:10px;text-align:center;">Solo para enviarte el análisis. Sin spam.</p>
+    `;
+    calcBtn.parentNode.insertBefore(guard, calcBtn);
   })();
 
   function saveGuardData() {
-    const n = document.getElementById('guardNombre').value.trim();
-    const w = document.getElementById('guardWa').value.trim();
-    if (!n || !w) return;
-    sessionStorage.setItem('a13i_nombre', n);
+    const waEl     = document.getElementById('guardWa');
+    const nombreEl = document.getElementById('guardNombre'); // puede no existir
+    const w = waEl ? waEl.value.trim() : '';
+    const n = nombreEl ? nombreEl.value.trim() : (sessionStorage.getItem('a13i_nombre') || '');
+    if (!w || !n) { if (!w && waEl) waEl.focus(); return; }
     sessionStorage.setItem('a13i_wa', w);
+    sessionStorage.setItem('a13i_nombre', n);
     document.getElementById('guardOptin').style.display = 'none';
     fbq('track', 'Lead');
-    // fire webhook background
     fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-optin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1344,6 +1397,8 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
 
     // Guardar todos los datos del resultado en sessionStorage
     sessionStorage.setItem('a13i_proceso',     proceso);
+    sessionStorage.setItem('a13i_rubro',       rubro1 || '');
+    sessionStorage.setItem('a13i_cuello',      cuello1 || '');
     sessionStorage.setItem('a13i_costoAnual',  Math.round(directCostGlobal));
     sessionStorage.setItem('a13i_costoMensual',Math.round(directCostGlobal / 12));
     sessionStorage.setItem('a13i_recuperable', Math.round(netoAnual));

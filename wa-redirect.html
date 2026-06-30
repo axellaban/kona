@@ -366,11 +366,13 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
   const WA_NUMBER = '5491164090022';
 
   // ── Leer datos de sessionStorage ──────────────────────────────────────────
-  const nombre    = sessionStorage.getItem('a13i_nombre') || '';
-  const wa        = sessionStorage.getItem('a13i_wa')     || '';
-  const proceso   = sessionStorage.getItem('a13i_proceso') || 'operaciones manuales';
+  const nombre     = sessionStorage.getItem('a13i_nombre')  || '';
+  const wa         = sessionStorage.getItem('a13i_wa')      || '';
+  const proceso    = sessionStorage.getItem('a13i_proceso') || 'operaciones manuales';
   const costoAnual = sessionStorage.getItem('a13i_costoAnual') || '';
-  const personas  = sessionStorage.getItem('a13i_personas') || '';
+  const personas   = sessionStorage.getItem('a13i_personas') || '';
+  const rubro      = sessionStorage.getItem('a13i_rubro')   || '';
+  const cuello     = sessionStorage.getItem('a13i_cuello')  || '';
 
   // Si no hay datos de calculadora, redirigir al optin
   if (!wa && !costoAnual) {
@@ -380,9 +382,11 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
   // ── Construir mensaje ─────────────────────────────────────────────────────
   function buildMessage() {
     if (costoAnual) {
-      const costoFmt = '$' + Number(costoAnual).toLocaleString('es-AR', { maximumFractionDigits: 0 });
-      const personasTxt = personas ? `. Somos ${personas} personas` : '';
-      return `Hola Axel, acabo de calcular que mi operación pierde ${costoFmt}/año en ${proceso}${personasTxt}. Quiero saber cuánto puedo recuperar.`;
+      const costoFmt    = '$' + Number(costoAnual).toLocaleString('es-AR', { maximumFractionDigits: 0 });
+      const personasTxt = personas ? `, somos ${personas} personas` : '';
+      const rubroTxt    = rubro    ? `, negocio de ${rubro}` : '';
+      const cuelloTxt   = cuello   ? ` El principal cuello es: ${cuello}.` : '';
+      return `Hola Axel, calculé que mi operación pierde ${costoFmt}/año en ${proceso}${personasTxt}${rubroTxt}.${cuelloTxt} Quiero saber cuánto puedo recuperar.`;
     }
     return `Hola Axel, me interesa hablar sobre automatización de ${proceso}. ¿Podemos coordinar una sesión?`;
   }
@@ -420,6 +424,8 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
           nombre,
           wa,
           proceso,
+          rubro,
+          cuello,
           costoAnual: sessionStorage.getItem('a13i_costoAnual'),
           costoMensual: sessionStorage.getItem('a13i_costoMensual'),
           recuperable: sessionStorage.getItem('a13i_recuperable'),

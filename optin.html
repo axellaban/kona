@@ -447,10 +447,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     <div class="form-wrap">
       <label class="f-label" for="nombre">Tu nombre</label>
       <input type="text" id="nombre" class="f-input" placeholder="¿Cómo te llamás?"
-        onkeydown="if(event.key==='Enter')document.getElementById('wa').focus()" autocomplete="given-name">
-      <label class="f-label" for="wa" style="margin-top:6px;">Tu WhatsApp</label>
-      <input type="tel" id="wa" class="f-input" placeholder="+54 9 11 XXXX XXXX"
-        onkeydown="if(event.key==='Enter')doSubmit()" autocomplete="tel">
+        onkeydown="if(event.key==='Enter')doSubmit()" autocomplete="given-name">
       <button class="f-btn" id="submitBtn" onclick="doSubmit()">Calcular con mis números →</button>
       <p id="optin-err" style="display:none;color:var(--accent);margin-top:8px;font-size:.9rem;text-align:center;font-family:'JetBrains Mono',monospace;"></p>
     </div>
@@ -501,10 +498,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
 
   async function doSubmit() {
     const nombre = document.getElementById('nombre').value.trim();
-    const wa     = document.getElementById('wa').value.trim();
-
     if (!nombre) { document.getElementById('nombre').focus(); return; }
-    if (!wa)     { document.getElementById('wa').focus(); return; }
 
     const btn   = document.getElementById('submitBtn');
     const errEl = document.getElementById('optin-err');
@@ -512,9 +506,8 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     btn.textContent = 'Abriendo calculadora…';
     errEl.style.display = 'none';
 
-    // Guardar en sessionStorage ANTES del redirect
+    // Guardar nombre en sessionStorage — WA se pide en la calculadora antes de mostrar resultados
     sessionStorage.setItem('a13i_nombre', nombre);
-    sessionStorage.setItem('a13i_wa', wa);
 
     // Pixel + GA
     fbq('track', 'Lead');
@@ -525,13 +518,12 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     document.getElementById('success').style.display = 'block';
     setTimeout(() => { window.location.href = 'calculadora.html'; }, 1200);
 
-    // Webhook en background (no bloquea el flujo)
+    // Webhook en background
     fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-optin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         nombre,
-        wa,
         fuente: 'optin',
         utm_source:   sessionStorage.getItem('a13i_utm_source')   || '',
         utm_medium:   sessionStorage.getItem('a13i_utm_medium')   || '',
