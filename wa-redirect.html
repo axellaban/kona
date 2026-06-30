@@ -393,7 +393,6 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
   const costoAnual = sessionStorage.getItem('a13i_costoAnual') || '';
   const personas   = sessionStorage.getItem('a13i_personas') || '';
   const rubro      = sessionStorage.getItem('a13i_rubro')   || '';
-  const volumen    = sessionStorage.getItem('a13i_volumen') || '';
 
   // Si no hay datos de calculadora, redirigir al optin
   if (!wa && !costoAnual) {
@@ -405,9 +404,8 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     if (costoAnual) {
       const costoFmt    = '$' + Number(costoAnual).toLocaleString('es-AR', { maximumFractionDigits: 0 });
       const personasTxt = personas ? `, somos ${personas} personas` : '';
-      const volumenTxt  = volumen  ? `, ${volumen}` : '';
       const rubroTxt    = rubro    ? `. Negocio de ${rubro}` : '';
-      return `Hola Axel, calculé que mi operación pierde ${costoFmt}/año en ${proceso}${personasTxt}${volumenTxt}${rubroTxt}. Quiero saber cuánto puedo recuperar.`;
+      return `Hola Axel, calculé que mi operación pierde ${costoFmt}/año en ${proceso}${personasTxt}${rubroTxt}. Quiero saber cuánto puedo recuperar.`;
     }
     return `Hola Axel, me interesa hablar sobre automatización de ${proceso}. ¿Podemos coordinar una sesión?`;
   }
@@ -446,7 +444,6 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
           wa,
           proceso,
           rubro,
-          volumen,
           costoAnual: sessionStorage.getItem('a13i_costoAnual'),
           costoMensual: sessionStorage.getItem('a13i_costoMensual'),
           recuperable: sessionStorage.getItem('a13i_recuperable'),
