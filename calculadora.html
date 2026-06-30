@@ -860,7 +860,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     <div class="block">
       <div class="block-hd">
         <div class="block-num">01</div>
-        <div class="block-title">Proceso repetitivo principal</div>
+        <div class="block-title">Principal cuello de botella</div>
         <div class="block-status">Seleccioná uno</div>
       </div>
       <div class="block-body">
@@ -907,18 +907,17 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     <div class="block">
       <div class="block-hd">
         <div class="block-num">03</div>
-        <div class="block-title">Principal cuello de botella</div>
-        <div class="block-status">El que más duele</div>
+        <div class="block-title">Volumen de operación</div>
+        <div class="block-status">Por mes</div>
       </div>
       <div class="block-body">
-        <div class="tags" id="tagsCuello">
-          <div class="tag" onclick="selCuello(this,'Alto volumen de trabajo manual')">Alto volumen de trabajo manual</div>
-          <div class="tag" onclick="selCuello(this,'Muchos errores y retrabajo')">Muchos errores y retrabajo</div>
-          <div class="tag" onclick="selCuello(this,'Tiempos de respuesta lentos')">Tiempos de respuesta lentos</div>
-          <div class="tag" onclick="selCuello(this,'Sin visibilidad del proceso')">Sin visibilidad del proceso</div>
-          <div class="tag" onclick="selCuello(this,'Dependencia de personas clave')">Dependencia de personas clave</div>
-          <div class="tag" onclick="selCuello(this,'Escalabilidad limitada')">Escalabilidad limitada</div>
+        <div class="tags" id="tagsVolumen">
+          <div class="tag" onclick="selVolumen(this,'menos de 100 operaciones/mes')">Menos de 100/mes</div>
+          <div class="tag" onclick="selVolumen(this,'100 a 500 operaciones/mes')">100 – 500/mes</div>
+          <div class="tag" onclick="selVolumen(this,'500 a 2.000 operaciones/mes')">500 – 2.000/mes</div>
+          <div class="tag" onclick="selVolumen(this,'más de 2.000 operaciones/mes')">+2.000/mes</div>
         </div>
+        <p class="hint">Transacciones, pedidos, tickets, clientes atendidos — lo que aplique a tu proceso.</p>
       </div>
     </div>
 
@@ -1114,14 +1113,30 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
 
     <!-- CTA PRINCIPAL: WhatsApp -->
     <div class="cta-box">
-      <span class="cta-eyebrow">Siguiente paso · 30 segundos</span>
-      <div class="cta-title">Mandame estos<br>números por<br>WhatsApp.</div>
+      <span class="cta-eyebrow">Ese número tiene solución.</span>
+      <div class="cta-title">¿Cuánto podés<br>recuperar<br>realmente?</div>
       <span class="cta-dynamic" id="cta-dynamic"></span>
-      <p class="cta-sub">El mensaje ya está escrito con tus datos. Solo tocá Enviar y coordinamos si tiene sentido una Sesión de Mapeo Operativo gratuita.</p>
-      <p style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-bottom:28px;">Solo para operaciones activas.</p>
+      <p class="cta-sub">Mandame tus números. Reviso tu operación personalmente y te digo en menos de 24hs si hay un caso real de automatización — y cuánto podés recuperar. Si no tiene sentido, también te lo digo.</p>
+
+      <!-- Pasos: Magic Lantern (Suby) -->
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;text-align:left;">
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0;padding-top:1px;">01</span>
+          <span style="font-size:13px;color:var(--muted);line-height:1.5;">Mandame tus resultados por WhatsApp <span style="color:var(--faint)">— el mensaje ya está escrito</span></span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0;padding-top:1px;">02</span>
+          <span style="font-size:13px;color:var(--muted);line-height:1.5;">Reviso tu operación y te respondo en menos de 24hs</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0;padding-top:1px;">03</span>
+          <span style="font-size:13px;color:var(--muted);line-height:1.5;">Si hay caso real, mapeamos tu operación en 30 minutos — sin costo</span>
+        </div>
+      </div>
+
       <button class="optin-btn" id="waCtaBtn" onclick="goToWA()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px;padding:18px 24px;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-        Mandame mis resultados por WhatsApp →
+        Quiero saber cuánto puedo recuperar →
       </button>
       <div style="text-align:center;margin-top:20px;">
         <a href="sesion.html" style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:var(--dim);text-decoration:none;transition:color 0.18s;" onmouseover="this.style.color='var(--muted)'" onmouseout="this.style.color='var(--dim)'">o prefiero ver casos de uso primero →</a>
@@ -1176,7 +1191,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
 
   let p1 = 'tu proceso';
   let rubro1 = '';
-  let cuello1 = '';
+  let volumen1 = '';
   let netoAnual = 0;
   let directCostGlobal = 0;
 
@@ -1194,11 +1209,12 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     el.classList.add('on');
     rubro1 = val;
   }
-  function selCuello(el, val) {
-    document.getElementById('tagsCuello').querySelectorAll('.tag').forEach(t => t.classList.remove('on'));
+  function selVolumen(el, val) {
+    document.getElementById('tagsVolumen').querySelectorAll('.tag').forEach(t => t.classList.remove('on'));
     el.classList.add('on');
-    cuello1 = val;
+    volumen1 = val;
   }
+
   function toggleAdv() {
     const d = document.getElementById('adv');
     const b = document.getElementById('advBtn');
@@ -1458,7 +1474,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     // Guardar todos los datos del resultado en sessionStorage
     sessionStorage.setItem('a13i_proceso',     proceso);
     sessionStorage.setItem('a13i_rubro',       rubro1 || '');
-    sessionStorage.setItem('a13i_cuello',      cuello1 || '');
+    sessionStorage.setItem('a13i_volumen',     volumen1 || '');
     sessionStorage.setItem('a13i_costoAnual',  Math.round(directCostGlobal));
     sessionStorage.setItem('a13i_costoMensual',Math.round(directCostGlobal / 12));
     sessionStorage.setItem('a13i_recuperable', Math.round(netoAnual));
