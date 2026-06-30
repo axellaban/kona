@@ -16,14 +16,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A13I — Calculadora de Costo Operativo</title>
-<meta name="description" content="Calculá con tus números cuántas horas y cuánto dinero se va en trabajo manual que un sistema podría estar haciendo. Para operaciones activas en LATAM.">
-<meta property="og:title" content="A13I — Diagnóstico de Automatización">
-<meta property="og:description" content="Calculalo con tus números en 2 minutos. Para operaciones activas en LATAM.">
+<meta name="description" content="Calculá cuánto te cuesta operar a mano. Con tus números reales, en 2 minutos. Para operaciones activas en LATAM.">
+<meta property="og:title" content="A13I — Calculadora de Costo Operativo">
+<meta property="og:description" content="Calculá cuánto te cuesta operar a mano. Con tus números reales, en 2 minutos.">
 <meta property="og:image" content="/assets/axel.jpg">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="A13I — Diagnóstico de Automatización">
-<meta name="twitter:description" content="Calculalo con tus números en 2 minutos. Para operaciones activas en LATAM.">
+<meta name="twitter:title" content="A13I — Calculadora de Costo Operativo">
+<meta name="twitter:description" content="Calculá cuánto te cuesta operar a mano. Con tus números reales, en 2 minutos.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -422,12 +422,12 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
   </div>
 
   <h1 class="hero-title">
-    Cuántas horas de tu equipo se van en trabajo
-    <span class="accent">que un sistema ya podría hacer.</span>
+    Calculá cuánto te cuesta
+    <span class="accent">operar a mano.</span>
   </h1>
 
   <p class="hero-sub">
-    Calculalo con tus números en 2 minutos. Tu costo real, tu equipo, tu volumen.
+    Con tus números reales, en 2 minutos. Proceso, equipo, volumen.
   </p>
 
   <!-- Línea vertical -->
@@ -445,10 +445,13 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
   <!-- FORM -->
   <div id="formWrap">
     <div class="form-wrap">
-      <label class="f-label" for="wa">Tu WhatsApp</label>
+      <label class="f-label" for="nombre">Tu nombre</label>
+      <input type="text" id="nombre" class="f-input" placeholder="¿Cómo te llamás?"
+        onkeydown="if(event.key==='Enter')document.getElementById('wa').focus()" autocomplete="given-name">
+      <label class="f-label" for="wa" style="margin-top:6px;">Tu WhatsApp</label>
       <input type="tel" id="wa" class="f-input" placeholder="+54 9 11 XXXX XXXX"
-        onkeydown="if(event.key==='Enter')doSubmit()">
-      <button class="f-btn" onclick="doSubmit()">Calcular con mis números →</button>
+        onkeydown="if(event.key==='Enter')doSubmit()" autocomplete="tel">
+      <button class="f-btn" id="submitBtn" onclick="doSubmit()">Calcular con mis números →</button>
       <p id="optin-err" style="display:none;color:var(--accent);margin-top:8px;font-size:.9rem;text-align:center;font-family:'JetBrains Mono',monospace;"></p>
     </div>
   </div>
@@ -487,37 +490,55 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
 </footer>
 
 <script data-cfasync="false">
-  async function doSubmit() {
-    const wa = document.getElementById('wa').value.trim();
-    if (!wa) { document.getElementById('wa').focus(); return; }
+  // ── Capturar UTMs al cargar ───────────────────────────────────────────────
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(k => {
+      const v = params.get(k);
+      if (v) sessionStorage.setItem('a13i_' + k, v);
+    });
+  })();
 
-    const btn = document.querySelector('.f-btn');
+  async function doSubmit() {
+    const nombre = document.getElementById('nombre').value.trim();
+    const wa     = document.getElementById('wa').value.trim();
+
+    if (!nombre) { document.getElementById('nombre').focus(); return; }
+    if (!wa)     { document.getElementById('wa').focus(); return; }
+
+    const btn   = document.getElementById('submitBtn');
     const errEl = document.getElementById('optin-err');
     btn.disabled = true;
-    btn.textContent = 'Enviando…';
+    btn.textContent = 'Abriendo calculadora…';
     errEl.style.display = 'none';
 
-    fbq('track', 'Lead');
-
-    try {
-      const res = await fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-optin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ wa, fuente: 'optin', timestamp: new Date().toISOString() })
-      });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-    } catch(e) {
-      console.error('Webhook error:', e);
-    }
-
+    // Guardar en sessionStorage ANTES del redirect
+    sessionStorage.setItem('a13i_nombre', nombre);
     sessionStorage.setItem('a13i_wa', wa);
 
+    // Pixel + GA
+    fbq('track', 'Lead');
+    gtag('event', 'lead', { nombre });
+
+    // Redirect inmediato — no esperar el webhook
     document.getElementById('formWrap').style.display = 'none';
     document.getElementById('success').style.display = 'block';
+    setTimeout(() => { window.location.href = 'calculadora.html'; }, 1200);
 
-    setTimeout(() => {
-      window.location.href = 'calculadora.html';
-    }, 2500);
+    // Webhook en background (no bloquea el flujo)
+    fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-optin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre,
+        wa,
+        fuente: 'optin',
+        utm_source:   sessionStorage.getItem('a13i_utm_source')   || '',
+        utm_medium:   sessionStorage.getItem('a13i_utm_medium')   || '',
+        utm_campaign: sessionStorage.getItem('a13i_utm_campaign') || '',
+        timestamp: new Date().toISOString()
+      })
+    }).catch(e => console.warn('Webhook optin error:', e));
   }
 </script>
 </body>

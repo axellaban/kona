@@ -24,6 +24,26 @@
               "value": "={{ $json.body.wa.replace(/\\s+/g, '').replace(/[^0-9+]/g, '') }}"
             },
             {
+              "name": "Nombre",
+              "value": "={{ $json.body.nombre || '' }}"
+            },
+            {
+              "name": "UTM_Source",
+              "value": "={{ $json.body.utm_source || '' }}"
+            },
+            {
+              "name": "UTM_Medium",
+              "value": "={{ $json.body.utm_medium || '' }}"
+            },
+            {
+              "name": "UTM_Campaign",
+              "value": "={{ $json.body.utm_campaign || '' }}"
+            },
+            {
+              "name": "Fuente",
+              "value": "={{ $json.body.fuente || 'optin' }}"
+            },
+            {
               "name": "Status",
               "value": "optin"
             },
@@ -110,6 +130,11 @@
           "mappingMode": "defineBelow",
           "value": {
             "WhatsApp": "={{ $('Normalizar Data').item.json.WhatsApp }}",
+            "Nombre": "={{ $('Normalizar Data').item.json.Nombre }}",
+            "UTM_Source": "={{ $('Normalizar Data').item.json.UTM_Source }}",
+            "UTM_Medium": "={{ $('Normalizar Data').item.json.UTM_Medium }}",
+            "UTM_Campaign": "={{ $('Normalizar Data').item.json.UTM_Campaign }}",
+            "Fuente": "={{ $('Normalizar Data').item.json.Fuente }}",
             "Status": "={{ $('Normalizar Data').item.json.Status }}",
             "Fecha_Optin": "={{ $('Normalizar Data').item.json.Fecha_Optin }}"
           }

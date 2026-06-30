@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="icon" href="/favicon/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="icon" href="/favicon/favicon-512.png" type="image/png" sizes="512x512">
+<link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV5WCTFBC3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV5WCTFBC3');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A13I — Abrí WhatsApp</title>
+<meta name="description" content="El mensaje ya está escrito. Solo tocá Enviar.">
+<meta property="og:title" content="A13I — Calculadora de Costo Operativo">
+<meta property="og:description" content="Calculá cuánto te cuesta operar a mano. Para operaciones activas en LATAM.">
+<meta property="og:image" content="/assets/axel.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A13I — Calculadora de Costo Operativo">
+<meta name="twitter:description" content="Calculá cuánto te cuesta operar a mano.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap&display=swap" rel="stylesheet">
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1274224524679737');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></noscript>
+
+<style>
+  :root {
+    --bg: #070810;
+    --card: #0f1119;
+    --card-2: #131623;
+    --ui: #171a27;
+    --border: #242838;
+    --border-2: #2e3244;
+    --text: #f4f4f5;
+    --muted: #a1a1aa;
+    --dim: #6b7280;
+    --faint: #4b5563;
+    --accent: #e8320a;
+    --accent-2: #ff5a30;
+    --accent-glow: rgba(232, 50, 10, 0.28);
+    --green-wa: #25D366;
+    --green-wa-dark: #1da851;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: 0.022; pointer-events: none; z-index: 100; mix-blend-mode: overlay;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(800px at 20% 0%, rgba(37, 211, 102, 0.05), transparent 60%),
+      radial-gradient(600px at 80% 100%, rgba(96, 165, 250, 0.03), transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  @keyframes countdownPulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+  /* TOPBAR */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(7, 8, 16, 0.82);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    height: 60px;
+    display: flex; align-items: center;
+    padding: 0 32px;
+  }
+  .logo { text-decoration: none; display: flex; align-items: center; gap: 6px; }
+  .logo-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px; font-weight: 700;
+    color: var(--text); letter-spacing: 0.06em;
+  }
+  .logo-text .num { color: var(--accent); }
+  .logo-text .cursor {
+    color: var(--accent);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+
+  /* MAIN WRAP */
+  .wrap {
+    position: relative; z-index: 2;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 64px 24px 80px;
+    text-align: center;
+    animation: fadeInUp 0.5s ease both;
+  }
+
+  /* EYEBROW */
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--green-wa);
+    padding: 5px 14px;
+    border: 1px solid rgba(37, 211, 102, 0.3);
+    border-radius: 100px;
+    background: rgba(37, 211, 102, 0.07);
+    margin-bottom: 32px;
+  }
+  .eyebrow .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green-wa);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+
+  /* HEADLINE */
+  .hero-title {
+    font-size: clamp(44px, 10vw, 72px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.0;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  .hero-sub {
+    font-size: 17px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+  .hero-sub strong { color: var(--text); }
+
+  /* VLINE */
+  .vline {
+    width: 2px; height: 48px;
+    margin: 0 auto 32px;
+    background: linear-gradient(180deg, rgba(37,211,102,0.6), rgba(37,211,102,0.1));
+    border-radius: 2px;
+  }
+
+  /* MESSAGE PREVIEW */
+  .preview-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--dim); margin-bottom: 12px;
+    display: block;
+  }
+  .preview-wrap {
+    background: var(--card);
+    border: 1px solid var(--border-2);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 32px;
+    text-align: left;
+  }
+  .wa-bubble {
+    background: #005c4b;
+    border-radius: 12px 12px 2px 12px;
+    padding: 14px 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #e9f5f2;
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-word;
+  }
+  .wa-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: -8px;
+    width: 0; height: 0;
+    border-left: 8px solid #005c4b;
+    border-bottom: 8px solid transparent;
+  }
+  .wa-time {
+    font-size: 11px;
+    color: rgba(233, 245, 242, 0.55);
+    text-align: right;
+    margin-top: 4px;
+  }
+  .preview-note {
+    font-size: 12px;
+    color: var(--dim);
+    text-align: center;
+    margin-top: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  /* WA BUTTON */
+  .wa-btn {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    width: 100%;
+    background: var(--green-wa);
+    border: none; border-radius: 14px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 17px; font-weight: 700;
+    padding: 18px 28px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.18s, transform 0.12s;
+    box-shadow: 0 4px 24px rgba(37, 211, 102, 0.35);
+    margin-bottom: 16px;
+  }
+  .wa-btn:hover { background: var(--green-wa-dark); transform: translateY(-1px); }
+  .wa-btn:active { transform: translateY(0); }
+  .wa-btn svg { flex-shrink: 0; }
+
+  /* COUNTDOWN */
+  .countdown-wrap {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: 0.1em;
+    color: var(--dim);
+    margin-bottom: 32px;
+    min-height: 20px;
+  }
+  #countdown-num {
+    color: var(--green-wa);
+    font-weight: 700;
+    display: inline-block;
+  }
+  #countdown-num.pulse { animation: countdownPulse 0.4s ease; }
+
+  /* DESKTOP NOTE */
+  .desktop-note {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    text-align: left;
+  }
+  .desktop-note strong { color: var(--text); }
+
+  /* DIVIDER */
+  .divider {
+    width: 100%; height: 1px;
+    background: var(--border);
+    margin: 40px 0;
+  }
+
+  /* SECONDARY LINK */
+  .secondary-link {
+    font-size: 13px;
+    color: var(--dim);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+    transition: color 0.18s;
+  }
+  .secondary-link:hover { color: var(--muted); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 32px;
+    position: relative; z-index: 2;
+    text-align: center;
+  }
+  footer span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--faint);
+  }
+
+  @media(max-width:600px) {
+    .wrap { padding: 48px 20px 64px; }
+    .topbar { padding: 0 20px; }
+    .hero-title { font-size: clamp(40px, 13vw, 64px); }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="/">
+    <span class="logo-text">A<span class="num">13</span>I<span class="cursor">_</span></span>
+  </a>
+</header>
+
+<main class="wrap">
+
+  <div class="eyebrow">
+    <span class="dot"></span>
+    Solo falta un paso
+  </div>
+
+  <h1 class="hero-title">ABRÍ<br>WHATSAPP</h1>
+
+  <p class="hero-sub">
+    El mensaje ya está escrito con tus números.<br>
+    <strong>Solo tocá Enviar.</strong>
+  </p>
+
+  <div class="vline"></div>
+
+  <span class="preview-label">Vista previa del mensaje</span>
+  <div class="preview-wrap">
+    <div class="wa-bubble" id="msgPreview">
+      Cargando tu mensaje…
+    </div>
+    <div class="wa-time" id="msgTime"></div>
+    <p class="preview-note">Solamente tocá Enviar en WhatsApp</p>
+  </div>
+
+  <!-- Desktop note (shown only on non-mobile) -->
+  <div class="desktop-note" id="desktopNote">
+    <strong>¿Usás WhatsApp en la computadora?</strong> Se va a abrir WhatsApp Web. Si preferís desde el celular, escaneá el QR o copiá el link desde tu teléfono.
+  </div>
+
+  <a class="wa-btn" id="waBtn" href="#" target="_blank" rel="noopener">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+    </svg>
+    Abrir WhatsApp
+  </a>
+
+  <div class="countdown-wrap" id="countdownWrap">
+    Abriendo en <span id="countdown-num">3</span> segundos…
+  </div>
+
+  <div class="divider"></div>
+
+  <a class="secondary-link" href="sesion.html">
+    Prefiero ver casos de uso primero →
+  </a>
+
+</main>
+
+<footer>
+  <span>© 2026 A13I</span>
+</footer>
+
+<script data-cfasync="false">
+  const WA_NUMBER = '5491164090022';
+
+  // ── Leer datos de sessionStorage ──────────────────────────────────────────
+  const nombre    = sessionStorage.getItem('a13i_nombre') || '';
+  const wa        = sessionStorage.getItem('a13i_wa')     || '';
+  const proceso   = sessionStorage.getItem('a13i_proceso') || 'operaciones manuales';
+  const costoAnual = sessionStorage.getItem('a13i_costoAnual') || '';
+  const personas  = sessionStorage.getItem('a13i_personas') || '';
+
+  // Si no hay datos de calculadora, redirigir al optin
+  if (!wa && !costoAnual) {
+    window.location.href = 'optin.html';
+  }
+
+  // ── Construir mensaje ─────────────────────────────────────────────────────
+  function buildMessage() {
+    if (costoAnual) {
+      const costoFmt = '$' + Number(costoAnual).toLocaleString('es-AR', { maximumFractionDigits: 0 });
+      const personasTxt = personas ? `. Somos ${personas} personas` : '';
+      return `Hola Axel, acabo de calcular que mi operación pierde ${costoFmt}/año en ${proceso}${personasTxt}. Quiero saber cuánto puedo recuperar.`;
+    }
+    return `Hola Axel, me interesa hablar sobre automatización de ${proceso}. ¿Podemos coordinar una sesión?`;
+  }
+
+  const mensaje = buildMessage();
+
+  // ── Renderizar preview ────────────────────────────────────────────────────
+  document.getElementById('msgPreview').textContent = mensaje;
+  const now = new Date();
+  document.getElementById('msgTime').textContent =
+    now.getHours().toString().padStart(2,'0') + ':' +
+    now.getMinutes().toString().padStart(2,'0');
+
+  // ── Construir link WA ─────────────────────────────────────────────────────
+  const waLink = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(mensaje)}`;
+  document.getElementById('waBtn').href = waLink;
+
+  // ── Detectar desktop ──────────────────────────────────────────────────────
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  if (!isMobile) {
+    document.getElementById('desktopNote').style.display = 'block';
+  }
+
+  // ── Pixel events ──────────────────────────────────────────────────────────
+  fbq('trackCustom', 'WARedirectPageView', { proceso, costoAnual, personas });
+  gtag('event', 'wa_redirect_pageview', { proceso, costo_anual: costoAnual });
+
+  // ── Webhook n8n (registrar que llegó a esta página) ───────────────────────
+  (async () => {
+    try {
+      await fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-calculadora', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre,
+          wa,
+          proceso,
+          costoAnual: sessionStorage.getItem('a13i_costoAnual'),
+          costoMensual: sessionStorage.getItem('a13i_costoMensual'),
+          recuperable: sessionStorage.getItem('a13i_recuperable'),
+          personas,
+          tasaError: sessionStorage.getItem('a13i_tasaError'),
+          utm_source: sessionStorage.getItem('a13i_utm_source') || '',
+          utm_medium: sessionStorage.getItem('a13i_utm_medium') || '',
+          utm_campaign: sessionStorage.getItem('a13i_utm_campaign') || '',
+          fuente: 'wa-redirect',
+          timestamp: new Date().toISOString()
+        })
+      });
+    } catch(e) {
+      console.warn('Webhook wa-redirect error:', e);
+    }
+  })();
+
+  // ── Click en botón WA ─────────────────────────────────────────────────────
+  document.getElementById('waBtn').addEventListener('click', () => {
+    fbq('trackCustom', 'ClickBotonWA', { proceso, costoAnual });
+    gtag('event', 'click_boton_wa', { proceso, costo_anual: costoAnual });
+    clearCountdown();
+  });
+
+  // ── Countdown ─────────────────────────────────────────────────────────────
+  let countdownVal = 3;
+  let countdownTimer = null;
+
+  function clearCountdown() {
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+    document.getElementById('countdownWrap').style.display = 'none';
+  }
+
+  function tickCountdown() {
+    countdownVal--;
+    const el = document.getElementById('countdown-num');
+    if (el) {
+      el.textContent = countdownVal;
+      el.classList.remove('pulse');
+      void el.offsetWidth; // reflow to restart animation
+      el.classList.add('pulse');
+    }
+    if (countdownVal <= 0) {
+      clearCountdown();
+      fbq('trackCustom', 'CountdownCompletado', { proceso, costoAnual });
+      gtag('event', 'countdown_completado');
+      window.open(waLink, '_blank', 'noopener');
+    }
+  }
+
+  // Empezar countdown después de 1s de carga
+  setTimeout(() => {
+    countdownTimer = setInterval(tickCountdown, 1000);
+  }, 1000);
+</script>
+</body>
+</html>

@@ -1,1 +1,14 @@
-hola [nombre], acá axel de kona. vi que dejaste tu contacto pero no llegaste a correr la calculadora. te paso este video de 2 min donde muestro cómo mido la pérdida operativa sin chamuyo. si te sirve, corré tus números acá: [link calculadora]
+== SCRIPT 01: EL FANTASMA (dejó el WA en optin pero no completó la calculadora) ==
+Esperar 2-4 horas antes de mandar.
+
+---
+
+Hola [NOMBRE], acá Axel.
+
+Dejaste el WhatsApp pero no llegaste a correr la calculadora.
+
+No pasa nada — tardás 2 minutos en ver cuánto te cuesta operar a mano con tus propios números.
+
+Acá: https://a13i.vercel.app/calculadora.html
+
+Si el número que te da es real, me escribís y coordinamos.

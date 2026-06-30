@@ -1,0 +1,32 @@
+== SCRIPT 00: TRIAGE INMEDIATO (responder cuando el lead te escribe) ==
+Usá cuando recibís el WA inicial con los datos del cálculo.
+
+---
+
+Hola [NOMBRE], lo vi.
+
+$[COSTO_ANUAL]/año en [PROCESO] con [PERSONAS] personas es un número serio.
+
+Tengo una pregunta rápida antes de mandarte nada:
+¿el cuello de botella está en el volumen de trabajo, en los errores, o en los tiempos de respuesta?
+
+[Esperar respuesta — no mandar Calendly todavía]
+
+---
+
+== SI RESPONDE Y TIENE SENTIDO (calificado) ==
+
+Tiene sentido que hablemos.
+Acá tenés el link para agendar una sesión de 30 minutos:
+[pegar Calendly personalizado]
+
+Es sin costo. Si en la llamada veo que no hay caso real, te lo digo en los primeros 10 minutos.
+
+---
+
+== SI NO RESPONDE EN 24-48HS → usar script 03-el-indeciso.txt ==
+== SI NO TIENE SENTIDO (demerge) ==
+
+Gracias por pasarme los datos. Con el volumen que describís, todavía no tiene mucho sentido meterse en automatización ahora.
+
+Si eso cambia, escribime.

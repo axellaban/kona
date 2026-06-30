@@ -1,1 +1,11 @@
-hola [nombre], acá axel de nuevo. leí tu aplicación. el cuello de botella que marcaste en [proceso] es de manual, me pasó exacto lo mismo operando mi agencia. agendate 30 min acá y te muestro en pantalla cómo destrabarlo: [link calendly]
+== SCRIPT 03: EL INDECISO (mandó el WA con sus datos pero no respondió al triage) ==
+Usar 48 horas después del primer mensaje de triage sin respuesta.
+Mandar UNA VEZ. No insistir más.
+
+---
+
+Hola [NOMBRE], solo te preguntaba una cosa antes de mandarte el link.
+
+$[COSTO_ANUAL]/año en [PROCESO] — ¿el problema es el volumen, los errores o los tiempos?
+
+Si no es buen momento, avisame y lo dejamos para cuando tengas 5 minutos.

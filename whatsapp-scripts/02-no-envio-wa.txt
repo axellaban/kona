@@ -1,0 +1,16 @@
+== SCRIPT 02: NO ENVIÓ EL WA (llegó a wa-redirect.html pero nunca mandó el mensaje) ==
+Detectar: webhook disparó con evento "wa_redirect_pageview" pero no hay mensaje WA entrante.
+Esperar 1-2 horas, luego mandar manualmente al número que quedó en el webhook.
+
+---
+
+Hola [NOMBRE], acá Axel.
+
+Vi que calculaste tu costo operativo — $[COSTO_ANUAL]/año es un número que vale la pena revisar.
+
+Parece que no llegó tu mensaje de WhatsApp. Si querés coordinamos igual:
+
+¿Qué proceso es el que más te preocupa — [PROCESO]?
+
+[Si responde → entrar en triage / usar script 00]
+[Si no responde en 48hs → ignorar, no seguir]

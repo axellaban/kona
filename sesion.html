@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="icon" href="/favicon/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="icon" href="/favicon/favicon-512.png" type="image/png" sizes="512x512">
+<link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV5WCTFBC3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV5WCTFBC3');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A13I — Tu Sesión de Mapeo Operativo</title>
+<meta name="description" content="Completá tu aplicación y agendá tu Sesión de Mapeo Operativo gratuita con Axel Laban Arzubi.">
+<meta property="og:title" content="A13I — Sesión de Mapeo Operativo">
+<meta property="og:description" content="Completá tu aplicación y agendá tu Sesión de Mapeo Operativo gratuita.">
+<meta property="og:image" content="/assets/axel.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1274224524679737');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></noscript>
+
+<!-- Calendly CSS & JS -->
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+
+<style>
+  :root {
+    --bg: #070810;
+    --card: #0f1119;
+    --card-2: #131623;
+    --ui: #171a27;
+    --ui-2: #1b1e2c;
+    --border: #242838;
+    --border-2: #2e3244;
+    --text: #f4f4f5;
+    --muted: #a1a1aa;
+    --dim: #6b7280;
+    --faint: #4b5563;
+    --accent: #e8320a;
+    --accent-2: #ff5a30;
+    --accent-glow: rgba(232, 50, 10, 0.28);
+    --green: #22c55e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: 0.022; pointer-events: none; z-index: 100; mix-blend-mode: overlay;
+  }
+
+  /* Radial glow */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(800px at 20% 0%, rgba(232, 50, 10, 0.07), transparent 60%),
+      radial-gradient(600px at 80% 100%, rgba(96, 165, 250, 0.04), transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  @keyframes shimmer { 0%{background-position:0% 50%;} 100%{background-position:200% 50%;} }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(7, 8, 16, 0.82);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px;
+  }
+
+  /* Logo */
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; user-select: none;
+  }
+  .logo-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; font-size: 18px;
+    letter-spacing: 0.06em; color: var(--text);
+  }
+  .logo-text .num { color: var(--accent); }
+  .logo-text .cursor {
+    color: var(--accent);
+    animation: pulse 1.1s ease-in-out infinite;
+  }
+
+  .topbar-right {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--dim);
+  }
+  .topbar-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* ── MAIN WRAP ── */
+  .wrap {
+    position: relative; z-index: 2;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 60px 32px 100px;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  /* ── BRIDGE (tráfico sin contexto de calculadora) ── */
+  .bridge-card {
+    background: var(--card);
+    border: 1px solid var(--border-2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 16px 16px 0;
+    padding: 28px 32px;
+    margin-bottom: 40px;
+  }
+  .bridge-eye {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent-2); margin-bottom: 10px;
+  }
+  .bridge-title {
+    font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
+    color: var(--text); margin-bottom: 8px; line-height: 1.2;
+  }
+  .bridge-sub {
+    font-size: 14.5px; color: var(--muted); line-height: 1.65; margin-bottom: 20px;
+  }
+  .bridge-btn {
+    display: inline-block; padding: 14px 28px;
+    background: var(--accent); border-radius: 10px;
+    color: #fff; font-family: 'Inter', sans-serif;
+    font-size: 15px; font-weight: 700; text-decoration: none;
+    transition: background .18s; box-shadow: 0 4px 20px rgba(232, 50, 10, 0.35);
+  }
+  .bridge-btn:hover { background: var(--accent-2); }
+  .bridge-or {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--dim); margin: 20px 0 12px;
+  }
+  .bridge-wa-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .bridge-input {
+    flex: 1; min-width: 180px;
+    background: var(--card-2); border: 1px solid var(--border-2);
+    border-radius: 10px; color: var(--text);
+    font-family: 'Inter', sans-serif; font-size: 15px;
+    padding: 13px 16px; outline: none; -webkit-appearance: none;
+    transition: border-color .18s, box-shadow .18s;
+  }
+  .bridge-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,50,10,0.12); }
+  .bridge-input::placeholder { color: var(--faint); }
+  .bridge-wa-btn {
+    padding: 13px 24px; background: var(--ui-2);
+    border: 1px solid var(--border-2); border-radius: 10px;
+    color: var(--text); font-family: 'Inter', sans-serif;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+    transition: background .18s, border-color .18s; white-space: nowrap;
+  }
+  .bridge-wa-btn:hover { background: var(--ui); border-color: var(--accent); }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    margin-bottom: 48px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent-2);
+    padding: 6px 14px;
+    border: 1px solid rgba(232, 50, 10, 0.3);
+    border-radius: 100px;
+    background: rgba(232, 50, 10, 0.06);
+    margin-bottom: 24px;
+  }
+  .eyebrow .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 8px var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  h1 {
+    font-size: clamp(32px, 5.5vw, 58px);
+    font-weight: 900; letter-spacing: -0.03em; line-height: 1.0;
+    color: var(--text); margin-bottom: 16px;
+  }
+  h1 .accent {
+    display: block;
+    background: linear-gradient(135deg, var(--accent-2), #ff8a65, var(--accent));
+    background-size: 200% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 5s linear infinite;
+  }
+
+  .page-sub {
+    font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 520px;
+  }
+
+  /* ── PROOF STACK ── */
+  .proof-stack { display: flex; flex-direction: column; gap: 24px; margin-bottom: 48px; }
+
+  /* Grupo (Operación / Equipo) */
+  .proof-group { display: flex; flex-direction: column; gap: 8px; }
+  .proof-group-head {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 4px;
+  }
+  .proof-group-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--faint); white-space: nowrap;
+  }
+  .proof-group-line {
+    flex: 1; height: 1px;
+    background: linear-gradient(to right, var(--border-2), transparent);
+  }
+
+  /* Card base */
+  .proof-card {
+    --c: var(--accent-2);
+    background: var(--card);
+    border: 1px solid var(--border-2);
+    border-radius: 14px;
+    overflow: hidden;
+    opacity: 0; animation: fadeInUp 0.4s ease forwards;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+  }
+  .proof-card:hover {
+    border-color: color-mix(in oklab, var(--c) 40%, var(--border-2));
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px -8px color-mix(in oklab, var(--c) 18%, transparent);
+  }
+
+  /* nth-child delays */
+  .proof-group:nth-child(1) .proof-card:nth-child(1){ animation-delay:.05s }
+  .proof-group:nth-child(1) .proof-card:nth-child(2){ animation-delay:.13s }
+  .proof-group:nth-child(2) .proof-card:nth-child(1){ animation-delay:.21s }
+  .proof-group:nth-child(2) .proof-card:nth-child(2){ animation-delay:.29s }
+
+  /* Caso propio — borde verde izquierdo */
+  .proof-card.own {
+    --c: var(--green);
+    border-left: 3px solid var(--green);
+    border-color: rgba(34,197,94,0.3);
+  }
+
+  .proof-card-hd {
+    display: flex; align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .proof-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-2); padding: 12px 18px;
+    border-right: 1px solid var(--border); white-space: nowrap;
+    background: color-mix(in oklab, var(--accent-2) 5%, transparent);
+  }
+  .proof-card.own .proof-tag {
+    color: var(--green);
+    background: color-mix(in oklab, var(--green) 7%, transparent);
+  }
+  .proof-title {
+    font-size: 13px; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--text); padding: 12px 18px; flex: 1;
+  }
+  .proof-body { padding: 20px 24px; }
+
+  /* Contexto — una línea */
+  .proof-context {
+    font-size: 12.5px; color: var(--dim);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em; line-height: 1.55;
+    margin-bottom: 14px;
+  }
+
+  /* Número grande */
+  .proof-number {
+    font-size: clamp(38px, 8vw, 56px);
+    font-weight: 900; letter-spacing: -0.04em; line-height: 1;
+    color: var(--c); margin-bottom: 10px;
+  }
+  .proof-number .proof-unit {
+    font-size: 13px; font-weight: 500;
+    color: var(--muted); letter-spacing: 0; margin-left: 6px;
+  }
+
+  /* Mecanismo — una oración */
+  .proof-mechanism {
+    font-size: 14px; color: var(--muted); line-height: 1.65;
+    margin-bottom: 18px;
+  }
+
+  /* Pills */
+  .proof-result { display: flex; gap: 6px; flex-wrap: wrap; }
+  .proof-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; letter-spacing: 0.03em;
+    padding: 5px 10px 5px 8px; border-radius: 999px;
+    background: color-mix(in oklab, var(--c) 9%, transparent);
+    border: 1px solid color-mix(in oklab, var(--c) 25%, transparent);
+    color: color-mix(in oklab, var(--c) 85%, var(--text));
+    display: flex; align-items: center; gap: 5px;
+  }
+  .proof-pill::before {
+    content: '·'; opacity: 0.6; font-size: 14px; line-height: 1;
+  }
+  .proof-pill.neutral {
+    --c: var(--faint);
+    background: var(--card-2);
+    border-color: var(--border-2);
+    color: var(--dim);
+  }
+
+  /* Costo de oportunidad — lo que seguía drenándose antes de actuar */
+  .proof-cost {
+    margin-top: 16px; padding-top: 14px;
+    border-top: 1px dashed var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; letter-spacing: 0.02em; line-height: 1.6;
+    color: var(--dim);
+  }
+  .proof-cost strong { color: var(--accent-2); font-weight: 600; }
+  .proof-card.own .proof-cost strong { color: var(--green); }
+
+  /* ── FORM SECTION ── */
+  .form-heading {
+    font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
+    color: var(--text); margin-bottom: 6px;
+  }
+  .form-desc {
+    font-size: 15px; color: var(--muted); line-height: 1.65; margin-bottom: 28px;
+  }
+
+  /* Q Blocks */
+  .q-block {
+    background: var(--card);
+    border: 1px solid var(--border-2);
+    border-radius: 14px;
+    margin-bottom: 8px; overflow: hidden;
+    opacity: 0; animation: fadeInUp 0.4s ease forwards;
+  }
+  .q-block:nth-child(1){animation-delay:.05s}
+  .q-block:nth-child(2){animation-delay:.12s}
+  .q-block:nth-child(3){animation-delay:.19s}
+
+  .q-hd {
+    display: flex; align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .q-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.12em; color: var(--accent);
+    padding: 14px 20px; border-right: 1px solid var(--border);
+    min-width: 56px; text-align: center; font-weight: 600;
+  }
+  .q-label {
+    font-weight: 700; font-size: 14px; letter-spacing: -0.01em;
+    color: var(--text); padding: 14px 20px; flex: 1;
+  }
+  .q-body { padding: 20px; }
+
+  /* Inputs */
+  input[type=text], input[type=tel], textarea, select {
+    width: 100%;
+    background: var(--card-2);
+    border: 1px solid var(--border-2);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    padding: 13px 16px;
+    outline: none;
+    transition: border-color .18s, box-shadow .18s;
+    resize: none;
+    -webkit-appearance: none;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(232, 50, 10, 0.12);
+  }
+  input::placeholder, textarea::placeholder { color: var(--faint); }
+  select { cursor: pointer; }
+  select option { background: var(--card-2); }
+
+  /* Radio group */
+  .radio-group { display: flex; flex-direction: column; gap: 6px; }
+  .radio-opt {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 16px;
+    border: 1px solid var(--border-2); border-radius: 10px;
+    cursor: pointer; transition: all .15s;
+  }
+  .radio-opt:hover { border-color: var(--border-2); background: var(--ui); }
+  .radio-opt.sel { border-color: var(--accent); background: rgba(232, 50, 10, 0.06); }
+  .radio-dot { width: 16px; height: 16px; border: 1px solid var(--dim); border-radius: 50%; flex-shrink: 0; position: relative; }
+  .radio-opt.sel .radio-dot { border-color: var(--accent); }
+  .radio-opt.sel .radio-dot::after { content: ''; position: absolute; inset: 3px; background: var(--accent); border-radius: 50%; }
+  .radio-text { font-size: 14px; color: var(--muted); }
+  .radio-opt.sel .radio-text { color: var(--text); }
+
+  /* Submit button */
+  .submit-btn {
+    width: 100%; padding: 20px 24px;
+    background: var(--accent); border: none; border-radius: 12px;
+    color: #fff; font-family: 'Inter', sans-serif;
+    font-size: 16px; font-weight: 700; letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
+    position: relative; overflow: hidden;
+    box-shadow: 0 4px 24px rgba(232, 50, 10, 0.4);
+    margin-top: 4px; margin-bottom: 64px;
+  }
+  .submit-btn::before {
+    content: '';
+    position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.4s ease;
+  }
+  .submit-btn:hover { background: var(--accent-2); transform: translateY(-1px); box-shadow: 0 8px 30px rgba(232, 50, 10, 0.5); }
+  .submit-btn:hover::before { left: 100%; }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled { background: var(--faint); cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ── CALENDLY SECTION ── */
+  #calendly-section { display: none; margin-bottom: 80px; animation: fadeInUp 0.5s ease; }
+
+  .cal-banner {
+    background: var(--green);
+    border-radius: 16px 16px 0 0;
+    padding: 40px;
+    position: relative; overflow: hidden;
+  }
+  .cal-banner::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .cal-eye {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(0,0,0,0.55); margin-bottom: 10px;
+  }
+  .cal-h {
+    font-size: clamp(28px, 5vw, 44px); font-weight: 900;
+    letter-spacing: -0.02em; line-height: 1.0; color: #000;
+    position: relative; z-index: 1;
+  }
+
+  .cal-body {
+    background: var(--card);
+    border: 1px solid var(--border-2);
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+    padding: 36px;
+  }
+  /* Línea de fricción — postura de autoridad antes de agendar */
+  .cal-friction {
+    font-size: 13.5px; color: var(--text); font-weight: 600;
+    line-height: 1.6; margin-bottom: 18px;
+    padding: 12px 16px;
+    background: var(--card-2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+  }
+  .cal-sub {
+    font-size: 15px; color: var(--muted); line-height: 1.75; margin-bottom: 28px;
+  }
+  .cal-btn {
+    display: inline-block; padding: 18px 36px;
+    background: var(--accent); border-radius: 10px;
+    color: #fff; font-family: 'Inter', sans-serif;
+    font-size: 16px; font-weight: 700;
+    text-decoration: none; cursor: pointer;
+    transition: background .18s, transform .15s, box-shadow .18s;
+    box-shadow: 0 4px 20px rgba(232, 50, 10, 0.35);
+  }
+  .cal-btn:hover { background: var(--accent-2); transform: translateY(-1px); box-shadow: 0 8px 28px rgba(232, 50, 10, 0.45); }
+  .cal-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--dim); margin-top: 14px; display: block;
+  }
+
+  /* ── GUARANTEE ── */
+  .guarantee {
+    background: var(--card);
+    border: 1px solid var(--border-2);
+    border-left: 3px solid var(--border-2);
+    border-radius: 0 14px 14px 0;
+    padding: 28px 32px; margin-bottom: 80px;
+  }
+  .g-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--dim); margin-bottom: 12px;
+  }
+  .g-text { font-size: 15px; color: var(--muted); line-height: 1.75; }
+  .g-text strong { color: var(--text); font-weight: 600; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 32px;
+    position: relative; z-index: 2;
+    text-align: center;
+  }
+  footer span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--faint);
+  }
+
+  /* ── VERTICAL LINES ── */
+  .vline {
+    width: 2px; height: 72px;
+    margin: 0 auto 40px;
+    background: linear-gradient(180deg, var(--accent), rgba(232,50,10,0.2));
+    border-radius: 2px;
+    opacity: 0.85;
+    box-shadow: 0 0 20px var(--accent-glow), 0 0 6px var(--accent);
+  }
+  .vline-2 {
+    width: 2px; height: 56px;
+    margin: 0 auto 36px;
+    background: linear-gradient(180deg, rgba(232,50,10,0.2), var(--border-2), transparent);
+    border-radius: 2px;
+    opacity: 1;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:600px) {
+    .wrap { padding: 48px 12px 80px; }
+    .topbar { padding: 0 20px; }
+    h1 { font-size: 32px; }
+    .cal-btn { display: block; text-align: center; width: 100%; white-space: normal; }
+    .cal-banner { padding: 28px 16px; }
+    .cal-body { padding: 16px 8px; }
+    .bridge-card { padding: 22px 18px; }
+    .bridge-wa-btn { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a class="logo" href="#">
+    <span class="logo-text">A<span class="num">13</span>I<span class="cursor">_</span></span>
+  </a>
+  <div class="topbar-right">
+  </div>
+</header>
+
+
+<main class="wrap">
+
+  <!-- CTA SUPERIOR: para tráfico que ya conoce la calculadora -->
+  <div style="background:var(--card);border:1px solid var(--border-2);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:18px 24px;margin-bottom:48px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+    <div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent-2);margin-bottom:6px;">¿Ya calculaste tu costo operativo?</div>
+      <div style="font-size:15px;font-weight:600;color:var(--text);">Mandame tus números por WhatsApp — es más rápido.</div>
+    </div>
+    <a href="optin.html" style="background:var(--accent);border:none;border-radius:10px;color:#fff;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;padding:12px 20px;text-decoration:none;white-space:nowrap;box-shadow:0 4px 16px rgba(232,50,10,0.3);">Ir a la calculadora →</a>
+  </div>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="eyebrow">
+      <span class="dot"></span>
+      Sesión de Mapeo Operativo · AI · Gratuita
+    </div>
+    <h1>
+      Cuatro operaciones reales.
+      <span class="accent">Mirá qué les sacamos de encima.</span>
+    </h1>
+    <p class="page-sub">Qué proceso era, qué rompía y qué resultado dio. Cuál se parece más a tu operación.</p>
+  </div>
+
+  <!-- Línea vertical -->
+  <div class="vline"></div>
+
+  <!-- PROOF STACK -->
+  <div class="proof-stack">
+
+    <div class="proof-group">
+
+      <!-- Caso 01: Posventa eCommerce -->
+      <div class="proof-card">
+        <div class="proof-card-hd">
+          <div class="proof-tag">Caso 01</div>
+          <div class="proof-title">Colchones y Sommiers top 3 en ventas de Mercado Libre</div>
+        </div>
+        <div class="proof-body">
+          <p class="proof-context">El equipo pasaba el día respondiendo WhatsApp de posventa. Todo manual, todo a persona.</p>
+          <div class="proof-number">85%<span class="proof-unit">sin intervención humana</span></div>
+          <p class="proof-mechanism">Conectamos una base de conocimiento a los datos vivos de operación. Cada cliente recibía info de su pedido específico. El 15% que necesitaba criterio fue a humano.</p>
+          <div class="proof-result">
+            <span class="proof-pill">1.250 consultas resueltas automáticamente/mes</span>
+            <span class="proof-pill neutral">Sin agregar headcount</span>
+          </div>
+          <p class="proof-cost">Lo que se seguía perdiendo cada mes antes de tocarlo: <strong>1.250 consultas absorbidas a mano por el equipo, mes tras mes.</strong></p>
+        </div>
+      </div>
+
+      <div class="vline-2" style="margin:16px auto;"></div>
+
+      <!-- Caso 02: Ventas WhatsApp — borde verde -->
+      <div class="proof-card own">
+        <div class="proof-card-hd">
+          <div class="proof-tag">Caso 02</div>
+          <div class="proof-title">HolaVeggie ebook con ventas 24/7 100% por WhatsApp</div>
+        </div>
+        <div class="proof-body">
+          <p class="proof-context">El bot tenía más de 600 ventas pero estaba ciego: no podía medir nada de lo que pasaba adentro.</p>
+          <div class="proof-number">+40%<span class="proof-unit">conversión</span></div>
+          <p class="proof-mechanism">Incorporamos Human in the Loop para ver qué pasaba adentro. Mapeamos los puntos exactos de abandono y activamos recupero automático para los que cortaban sin comprar.</p>
+          <div class="proof-result">
+            <span class="proof-pill">Ventas recuperadas que se perdían en silencio</span>
+            <span class="proof-pill neutral">Probado en producción propia primero</span>
+          </div>
+          <p class="proof-cost">Lo que se seguía perdiendo cada mes antes de tocarlo: <strong>cada abandono caía en silencio, sin recupero, mes tras mes.</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="vline-2" style="margin:16px auto;"></div>
+
+    <div class="proof-group">
+
+      <!-- Caso 03: Flujo de contenido -->
+      <div class="proof-card">
+        <div class="proof-card-hd">
+          <div class="proof-tag">Caso 03</div>
+          <div class="proof-title">Dirección de marketing en SaaS B2B para creación de contenido</div>
+        </div>
+        <div class="proof-body">
+          <p class="proof-context">El equipo de contenido tenía cinco herramientas distintas y nadie sabía bien lo que hacía el otro.</p>
+          <div class="proof-number">12 hs<span class="proof-unit">/ semana recuperadas</span></div>
+          <p class="proof-mechanism">Construimos un flujo agéntico que integró research, calendarización y generación de contenido por canal. Cada paso le pasaba el contexto al siguiente. El equipo publicó con revisión humana.</p>
+          <div class="proof-result">
+            <span class="proof-pill">Research + calendario + creación por canal</span>
+            <span class="proof-pill neutral">Un solo flujo integrado</span>
+          </div>
+          <p class="proof-cost">Lo que se seguía perdiendo cada mes antes de tocarlo: <strong>12 hs/semana del equipo (≈48 hs/mes) en coordinación manual.</strong></p>
+        </div>
+      </div>
+
+      <div class="vline-2" style="margin:16px auto;"></div>
+
+      <!-- Caso 04: Asistente ejecutivo reuniones B2B -->
+      <div class="proof-card">
+        <div class="proof-card-hd">
+          <div class="proof-tag">Caso 04</div>
+          <div class="proof-title">Consultora fintech, equipo comercial B2B con ciclos de venta largos</div>
+        </div>
+        <div class="proof-body">
+          <p class="proof-context">Antes de cada reunión, los comerciales llegaban sin contexto. Prepararse les tomaba una hora por meeting.</p>
+          <div class="proof-number">6 hs<span class="proof-unit">/ semana por comercial</span></div>
+          <p class="proof-mechanism">Un agente investigó el perfil completo antes de cada reunión y generó el brief con next steps automáticamente después.</p>
+          <div class="proof-result">
+            <span class="proof-pill">Cada reunión con contexto completo previo</span>
+            <span class="proof-pill neutral">Brief post-reunión generado automáticamente</span>
+          </div>
+          <p class="proof-cost">Lo que se seguía perdiendo cada mes antes de tocarlo: <strong>6 hs/semana por comercial (≈24 hs/mes) en preparar reuniones a mano.</strong></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="vline-2"></div>
+
+  <!-- Guarantee -->
+  <div class="guarantee">
+    <div class="g-title">Trabajo 1:1 con cada dueño/líder de operación</div>
+    <p class="g-text">
+      Vendedores de mapas sobran. Trabajo en el barro con vos.
+      <strong>Si no hay caso concreto de automatización, te lo digo en la llamada.</strong>
+    </p>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-heading">Tres preguntas. Menos de 3 minutos.</div>
+
+  <div id="appForm">
+
+    <div class="q-block">
+      <div class="q-hd">
+        <div class="q-num">01</div>
+        <div class="q-label">¿A qué se dedica tu negocio?</div>
+      </div>
+      <div class="q-body">
+        <textarea id="q1" rows="3" placeholder="Describí brevemente qué hace tu empresa y cuál es tu rol…"></textarea>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-hd">
+        <div class="q-num">02</div>
+        <div class="q-label">¿Qué proceso repetitivo consume más horas en tu equipo hoy?</div>
+      </div>
+      <div class="q-body">
+        <textarea id="q2" rows="3" placeholder="Ej: seguimiento manual de leads, carga de datos, atención al cliente por WhatsApp…"></textarea>
+      </div>
+    </div>
+
+    <div class="q-block">
+      <div class="q-hd">
+        <div class="q-num">03</div>
+        <div class="q-label">¿Tamaño del equipo y volumen de operación?</div>
+      </div>
+      <div class="q-body">
+        <textarea id="q3" rows="3" placeholder="Ej: 5 personas, facturamos ~$300K/año · o: equipo de 2, operamos 200 pedidos/mes"></textarea>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitApp()">Preparar mi Sesión de Mapeo Operativo →</button>
+    <p id="form-err" style="display:none;color:var(--accent);margin-top:10px;font-size:.9rem;font-family:'JetBrains Mono',monospace;text-align:center;"></p>
+
+  </div>
+
+  <!-- Calendly (post-submit) -->
+  <div id="calendly-section">
+    <div class="cal-banner">
+      <div class="cal-eye">✓ Aplicación recibida</div>
+      <div class="cal-h">Agendá tu Sesión<br>de Mapeo Operativo.</div>
+    </div>
+    <div class="cal-body">
+      <p class="cal-friction">Valoramos tu tiempo y el nuestro. Si agendás, asistí.</p>
+      <p class="cal-sub">Trabajo con cuatro operaciones por mes, así puedo garantizar el resultado.</p>
+      <div id="calendly-inline" style="width:100%;min-width:0;height:700px;overflow:hidden;border-radius:10px;"></div>
+    </div>
+  </div>
+
+
+</main>
+
+<footer>
+  <span>© 2026 A13I</span>
+</footer>
+
+<script data-cfasync="false">
+  async function submitApp() {
+    const q1 = document.getElementById('q1').value.trim();
+    const q2 = document.getElementById('q2').value.trim();
+    const q3 = document.getElementById('q3').value.trim();
+    if (!q1 || !q2 || !q3) {
+      alert('Completá las tres preguntas para continuar.');
+      return;
+    }
+
+    // Resolver WhatsApp desde sessionStorage
+    let wa = sessionStorage.getItem('a13i_wa') || '';
+
+    const btn = document.getElementById('submitBtn');
+    const errEl = document.getElementById('form-err');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+    errEl.style.display = 'none';
+
+    const name = sessionStorage.getItem('a13i_name') || '';
+    console.log('A13I aplicación:', { q1, q2, q3, wa });
+    fbq('trackCustom', 'FormularioEnviado');
+
+    try {
+      const res = await fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-form', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          wa: wa,
+          q1: q1,
+          q2: q2,
+          q3: q3,
+          fuente: 'formulario',
+          timestamp: new Date().toISOString()
+        })
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+    } catch(e) {
+      console.error('Webhook formulario error:', e);
+    }
+
+    document.getElementById('appForm').style.display = 'none';
+    document.getElementById('calendly-section').style.display = 'block';
+
+    // Calendly inline: mismo tab → el listener de event_scheduled SÍ dispara
+    if (window.Calendly) {
+      Calendly.initInlineWidget({
+        url: 'https://calendly.com/axellaban/30min',
+        parentElement: document.getElementById('calendly-inline'),
+        prefill: { name: name, customAnswers: { a1: wa } }
+      });
+      fbq('trackCustom', 'CalendarioMostrado');
+    }
+
+    document.getElementById('calendly-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+
+  function trackCalendlyClick() {
+    fbq('trackCustom', 'ClickCalendly');
+    const wa = sessionStorage.getItem('a13i_wa') || '';
+
+    fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/6032da9b-66c3-41f8-9d2b-c382970e47b5', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        wa: wa,
+        evento: 'click_calendly',
+        timestamp: new Date().toISOString()
+      })
+    }).catch(e => console.error('Error tracking click:', e));
+  }
+
+  window.addEventListener('message', function(e) {
+    if (e.data.event && e.data.event.indexOf('calendly.event_scheduled') !== -1) {
+      const wa = sessionStorage.getItem('a13i_wa') || '';
+      fbq('trackCustom', 'LlamadaAgendada');
+      fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/6032da9b-66c3-41f8-9d2b-c382970e47b5', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          wa: wa,
+          evento: 'calendly_agendado',
+          payload: e.data.payload,
+          timestamp: new Date().toISOString()
+        })
+      }).catch(err => console.error('Error enviando webhook Calendly:', err));
+    }
+  });
+</script>
+</body>
+</html>

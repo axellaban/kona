@@ -1,5 +1,5 @@
 {
-  "name": "KONA - 02 Calculadora",
+  "name": "KONA - 02 WA Redirect (Calculadora)",
   "nodes": [
     {
       "parameters": {
@@ -25,15 +25,31 @@
             },
             {
               "name": "Nombre",
-              "value": "={{ $json.body.name }}"
+              "value": "={{ $json.body.nombre || $json.body.name || '' }}"
             },
             {
               "name": "Proceso_Elegido",
-              "value": "={{ $json.body.proceso }}"
+              "value": "={{ $json.body.proceso || '' }}"
+            },
+            {
+              "name": "Evento",
+              "value": "={{ $json.body.evento || 'wa_redirect_pageview' }}"
+            },
+            {
+              "name": "UTM_Source",
+              "value": "={{ $json.body.utm_source || '' }}"
+            },
+            {
+              "name": "UTM_Medium",
+              "value": "={{ $json.body.utm_medium || '' }}"
+            },
+            {
+              "name": "UTM_Campaign",
+              "value": "={{ $json.body.utm_campaign || '' }}"
             },
             {
               "name": "Status",
-              "value": "calculadora_completa"
+              "value": "wa_redirect"
             },
             {
               "name": "Fecha_Calculadora",
@@ -42,12 +58,24 @@
           ],
           "number": [
             {
-              "name": "Oportunidad_Neta",
-              "value": "={{ $json.body.netoAnual }}"
+              "name": "Costo_Anual",
+              "value": "={{ $json.body.costoAnual || $json.body.directCost || 0 }}"
             },
             {
-              "name": "Costo_Directo",
-              "value": "={{ $json.body.directCost }}"
+              "name": "Costo_Mensual",
+              "value": "={{ $json.body.costoMensual || 0 }}"
+            },
+            {
+              "name": "Recuperable",
+              "value": "={{ $json.body.recuperable || $json.body.netoAnual || 0 }}"
+            },
+            {
+              "name": "Personas",
+              "value": "={{ $json.body.personas || 0 }}"
+            },
+            {
+              "name": "Tasa_Error",
+              "value": "={{ $json.body.tasaError || 0 }}"
             }
           ]
         },
@@ -78,7 +106,15 @@
             "Status": "={{ $('Cargar Datos').item.json.Status }}",
             "Nombre": "={{ $('Cargar Datos').item.json.Nombre }}",
             "Proceso_Elegido": "={{ $('Cargar Datos').item.json.Proceso_Elegido }}",
-            "Oportunidad_Neta": "={{ $('Cargar Datos').item.json.Oportunidad_Neta }}",
+            "Evento": "={{ $('Cargar Datos').item.json.Evento }}",
+            "Costo_Anual": "={{ $('Cargar Datos').item.json.Costo_Anual }}",
+            "Costo_Mensual": "={{ $('Cargar Datos').item.json.Costo_Mensual }}",
+            "Recuperable": "={{ $('Cargar Datos').item.json.Recuperable }}",
+            "Personas": "={{ $('Cargar Datos').item.json.Personas }}",
+            "Tasa_Error": "={{ $('Cargar Datos').item.json.Tasa_Error }}",
+            "UTM_Source": "={{ $('Cargar Datos').item.json.UTM_Source }}",
+            "UTM_Medium": "={{ $('Cargar Datos').item.json.UTM_Medium }}",
+            "UTM_Campaign": "={{ $('Cargar Datos').item.json.UTM_Campaign }}",
             "Fecha_Calculadora": "={{ $('Cargar Datos').item.json.Fecha_Calculadora }}"
           }
         },
@@ -104,8 +140,8 @@
           "conditions": [
             {
               "id": "c1",
-              "leftValue": "={{ $('Cargar Datos').item.json.Oportunidad_Neta }}",
-              "rightValue": 5000,
+              "leftValue": "={{ $('Cargar Datos').item.json.Costo_Anual }}",
+              "rightValue": 30000,
               "operator": {
                 "type": "number",
                 "operation": "larger"
@@ -130,7 +166,7 @@
       "typeVersion": 1,
       "position": [1050, 80],
       "notesInFlow": true,
-      "notes": "Avisar a Axel por Telegram"
+      "notes": "Costo_Anual > $30K → avisar a Axel por Telegram. Usar script 00-triage-respuesta.txt"
     },
     {
       "parameters": {
@@ -204,7 +240,7 @@
       "typeVersion": 1,
       "position": [1450, 200],
       "notesInFlow": true,
-      "notes": "Avisarle a Axel de escribir"
+      "notes": "Lead llegó a wa-redirect pero no envió WA → usar script 02-no-envio-wa.txt"
     }
   ],
   "connections": {
