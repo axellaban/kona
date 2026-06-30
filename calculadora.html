@@ -150,6 +150,28 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     animation: fadeInUp 0.8s ease-out;
   }
 
+  /* ── ABOUT / CRED (moved from optin) ── */
+  .about-card {
+    display: flex; align-items: center; gap: 16px;
+    margin-top: 40px;
+  }
+  .about-av {
+    width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+    overflow: hidden; border: 2px solid var(--border-2);
+    background: var(--ui-2);
+  }
+  .about-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .about-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .about-bio  { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .cred-block {
+    background: var(--card-2); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 16px 20px; margin-top: 14px;
+  }
+  .cred-text { font-size: 13px; color: var(--muted); line-height: 1.75; }
+  .cred-text strong { color: var(--text); font-weight: 600; }
+
   /* ── PAGE HEADER ── */
   .page-header {
     margin-bottom: 48px;
@@ -800,20 +822,34 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
 
 <main class="wrap">
 
-  <!-- PAGE HEADER -->
+  <!-- PAGE HEADER / HERO -->
   <div class="page-header">
     <div class="eyebrow">
       <span class="dot"></span>
-      Tu costo operativo real
+      Recurso gratuito
     </div>
     <h1>
-      Cuánto te cuesta hoy
-      <span class="accent">hacer esto a mano.</span>
+      Calculá cuánto te cuesta
+      <span class="accent">operar a mano.</span>
     </h1>
     <p class="page-sub">
-      Completá los 5 campos. El sistema calcula tu costo real de operar a mano
-      <strong>— tiempo, errores y costo de oportunidad incluidos.</strong>
+      Con tus números reales, en 2 minutos. Proceso, equipo, volumen.
     </p>
+
+    <div class="about-card">
+      <div class="about-av">
+        <img src="assets/axel.jpg" alt="Axel Laban Arzubi">
+      </div>
+      <div class="about-body">
+        <div class="about-name">Axel Laban Arzubi</div>
+        <div class="about-bio">3x emprendedor · docente en la Maestría en Negocios Digitales e IA de la UBA</div>
+      </div>
+    </div>
+    <div class="cred-block">
+      <p class="cred-text">
+        Bootstrapeé <strong>HolaVeggie hasta $2M</strong> sin inversión. Antes armé equipos de eCommerce y el BI que los hacía correr, y los llevé a <strong>+$15M/año</strong>. Hoy armo esos mismos sistemas, ahora con IA, en operaciones reales.
+      </p>
+    </div>
   </div>
 
   <!-- Línea vertical -->
@@ -1110,6 +1146,30 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
 </div>
 
 <script data-cfasync="false">
+  // ── Capturar UTMs al cargar ───────────────────────────────────────────────
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(k => {
+      const v = params.get(k);
+      if (v) sessionStorage.setItem('a13i_' + k, v);
+    });
+    // Primer toque: webhook background solo con UTMs
+    const hasUtm = params.get('utm_source') || params.get('utm_medium') || params.get('utm_campaign');
+    if (hasUtm) {
+      fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-optin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fuente: 'calculadora-direct',
+          utm_source:   params.get('utm_source')   || '',
+          utm_medium:   params.get('utm_medium')   || '',
+          utm_campaign: params.get('utm_campaign') || '',
+          timestamp: new Date().toISOString()
+        })
+      }).catch(() => {});
+    }
+  })();
+
   function escHtml(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
