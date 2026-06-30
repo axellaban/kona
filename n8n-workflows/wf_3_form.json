@@ -24,6 +24,14 @@
               "value": "={{ $json.body.wa.replace(/\\s+/g, '').replace(/[^0-9+]/g, '') }}"
             },
             {
+              "name": "Nombre",
+              "value": "={{ $json.body.nombre || '' }}"
+            },
+            {
+              "name": "Proceso_Elegido",
+              "value": "={{ $json.body.proceso || '' }}"
+            },
+            {
               "name": "Respuesta_Q1",
               "value": "={{ $json.body.q1 }}"
             },
@@ -66,6 +74,8 @@
           "mappingMode": "defineBelow",
           "value": {
             "Status": "={{ $('Mapear Respuestas').item.json.Status }}",
+            "Nombre": "={{ $('Mapear Respuestas').item.json.Nombre }}",
+            "Proceso_Elegido": "={{ $('Mapear Respuestas').item.json.Proceso_Elegido }}",
             "Respuesta_Q1": "={{ $('Mapear Respuestas').item.json.Respuesta_Q1 }}",
             "Respuesta_Q2": "={{ $('Mapear Respuestas').item.json.Respuesta_Q2 }}",
             "Respuesta_Q3": "={{ $('Mapear Respuestas').item.json.Respuesta_Q3 }}"

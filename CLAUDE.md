@@ -246,9 +246,9 @@ Located in `whatsapp-scripts/`. Four templates targeting different lead behavior
 | `02-el-asustado.txt` | `[monto]` | wf_2_calculator — from `netoAnual` | ✓ |
 | `02-el-asustado.txt` | `[proceso]` | wf_2_calculator — from `proceso` field | ✓ |
 | `03-el-indeciso.txt` | `[nombre]` | wf_3_form | ✓ |
-| `03-el-indeciso.txt` | `[proceso]` | **not sent by thankyou.html** — must be looked up from calculator submission | ⚠ incomplete |
+| `03-el-indeciso.txt` | `[proceso]` | wf_3_form — now sent directly from `sesion.html`/`thankyou.html` as `proceso` (also already in the sheet from the calculator step) | ✓ fixed 2026-06-30 |
 | `04-el-agendado.txt` | `[nombre]` | wf_4_calendly | ✓ |
-| `04-el-agendado.txt` | `[día]` / `[hora]` | wf_4_calendly — from `event_start_time`, needs formatting | ⚠ needs parsing |
+| `04-el-agendado.txt` | `[día]` / `[hora]` | wf_4_calendly — `Dia_Booking`/`Hora_Booking` columns, formatted in `America/Argentina/Buenos_Aires` (es locale) from `event_start_time` | ✓ fixed 2026-06-30 — requires adding `Dia_Booking`/`Hora_Booking` columns to the Leads sheet before re-importing the workflow |
 | `04-el-agendado.txt` | `[link]` | hardcoded in workflow | ✓ |
 
 ---

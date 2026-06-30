@@ -28,6 +28,14 @@
               "value": "={{ $json.body.payload.event_start_time }}"
             },
             {
+              "name": "Dia_Booking",
+              "value": "={{ $json.body.payload.event_start_time ? DateTime.fromISO($json.body.payload.event_start_time).setZone('America/Argentina/Buenos_Aires').setLocale('es').toFormat(\"cccc d 'de' LLLL\") : '' }}"
+            },
+            {
+              "name": "Hora_Booking",
+              "value": "={{ $json.body.payload.event_start_time ? DateTime.fromISO($json.body.payload.event_start_time).setZone('America/Argentina/Buenos_Aires').toFormat('HH:mm') : '' }}"
+            },
+            {
               "name": "Status",
               "value": "llamada_agendada"
             }
@@ -58,7 +66,9 @@
           "mappingMode": "defineBelow",
           "value": {
             "Status": "={{ $('Extraer Datos Booking').item.json.Status }}",
-            "Fecha_Booking": "={{ $('Extraer Datos Booking').item.json.Fecha_Booking }}"
+            "Fecha_Booking": "={{ $('Extraer Datos Booking').item.json.Fecha_Booking }}",
+            "Dia_Booking": "={{ $('Extraer Datos Booking').item.json.Dia_Booking }}",
+            "Hora_Booking": "={{ $('Extraer Datos Booking').item.json.Hora_Booking }}"
           }
         },
         "options": {

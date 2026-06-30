@@ -809,7 +809,8 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     errEl.style.display = 'none';
 
     const name = sessionStorage.getItem('a13i_name') || '';
-    console.log('A13I aplicación:', { q1, q2, q3, wa });
+    const proceso = sessionStorage.getItem('a13i_proceso') || '';
+    console.log('A13I aplicación:', { q1, q2, q3, wa, proceso });
     fbq('trackCustom', 'FormularioEnviado');
 
     try {
@@ -818,6 +819,8 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           wa: wa,
+          nombre: name,
+          proceso: proceso,
           q1: q1,
           q2: q2,
           q3: q3,
