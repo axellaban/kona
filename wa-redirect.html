@@ -190,6 +190,8 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     display: inline-block;
     max-width: 100%;
     word-break: break-word;
+    white-space: pre-line;
+    text-align: left;
   }
   .wa-bubble::after {
     content: '';
@@ -371,14 +373,16 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
   const costoAnual = sessionStorage.getItem('a13i_costoAnual') || '';
   const personas   = sessionStorage.getItem('a13i_personas') || '';
   const rubro      = sessionStorage.getItem('a13i_rubro')   || '';
+  const canvasMsg  = sessionStorage.getItem('a13i_canvas_msg') || '';
 
-  // Si no hay datos de calculadora, redirigir al optin
-  if (!wa && !costoAnual) {
+  // Si no hay datos de calculadora ni del ops canvas, redirigir al optin
+  if (!wa && !costoAnual && !canvasMsg) {
     window.location.href = 'optin.html';
   }
 
   // ── Construir mensaje ─────────────────────────────────────────────────────
   function buildMessage() {
+    if (canvasMsg) { return canvasMsg; }
     if (costoAnual) {
       const costoFmt    = '$' + Number(costoAnual).toLocaleString('es-AR', { maximumFractionDigits: 0 });
       const personasTxt = personas ? `, somos ${personas} personas` : '';
@@ -430,7 +434,7 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
           utm_source: sessionStorage.getItem('a13i_utm_source') || '',
           utm_medium: sessionStorage.getItem('a13i_utm_medium') || '',
           utm_campaign: sessionStorage.getItem('a13i_utm_campaign') || '',
-          fuente: 'wa-redirect',
+          fuente: canvasMsg ? 'ops-canvas' : 'wa-redirect',
           timestamp: new Date().toISOString()
         })
       });

@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<link rel="icon" href="/favicon/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="icon" href="/favicon/favicon-512.png" type="image/png" sizes="512x512">
+<link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FV5WCTFBC3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV5WCTFBC3');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A13I — Ops Canvas</title>
+<meta name="description" content="Mapeá tu eCommerce en 3 motores y descubrí qué automatizar primero. Para operaciones activas en LATAM.">
+<meta property="og:title" content="A13I — Ops Canvas">
+<meta property="og:description" content="Tu operación entera en un mapa. El canvas te marca qué automatizar primero.">
+<meta property="og:image" content="/assets/axel.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A13I — Ops Canvas">
+<meta name="twitter:description" content="Mapeá tu operación en 3 motores. Descubrí qué automatizar primero.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1274224524679737');
+fbq('track', 'PageView');
+</script>
+<style>
+  :root{
+    --bg: #070810;
+    --card: #0f1119;
+    --card-2: #131623;
+    --ui: #171a27;
+    --ui-2: #1b1e2c;
+    --border: #242838;
+    --border-2: #2e3244;
+    --text: #f4f4f5;
+    --muted: #a1a1aa;
+    --dim: #6b7280;
+    --faint: #4b5563;
+    --accent: #e8320a;
+    --accent-2: #ff5a30;
+    --accent-glow: rgba(232, 50, 10, 0.28);
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --orange: #f97316;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* noise overlay */
+  body::before{
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: 0.022; pointer-events: none; z-index: 100; mix-blend-mode: overlay;
+  }
+  /* ambient glows */
+  body::after{
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(800px at 20% 0%, rgba(232, 50, 10, 0.07), transparent 60%),
+      radial-gradient(600px at 80% 100%, rgba(96, 165, 250, 0.04), transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrap{ max-width: 880px; margin: 0 auto; padding: 0 20px 100px; position: relative; z-index: 2; }
+
+  /* ── TOPBAR ─────────────────────────────────────────────── */
+  .topbar{
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(7, 8, 16, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+  }
+  .logo{ display: flex; align-items: center; gap: 10px; text-decoration: none; user-select: none; }
+  .logo-text{
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; font-size: 18px; letter-spacing: 0.06em;
+    color: var(--text);
+  }
+  .logo-text .num{ color: var(--accent); }
+  .logo-text .cursor{ color: var(--accent); animation: pulse 1.1s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.15;} }
+  .topbar-cta{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent-2);
+    text-decoration: none;
+    padding: 9px 16px;
+    border: 1px solid rgba(232, 50, 10, 0.3);
+    border-radius: 100px;
+    background: rgba(232, 50, 10, 0.06);
+    transition: background .18s, border-color .18s;
+    cursor: pointer;
+  }
+  .topbar-cta:hover{ background: rgba(232, 50, 10, 0.14); border-color: rgba(232, 50, 10, 0.55); }
+
+  /* ── HEADER ─────────────────────────────────────────────── */
+  header.hero{
+    padding: 64px 0 44px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .eyebrow{
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent-2);
+    padding: 6px 14px;
+    border: 1px solid rgba(232, 50, 10, 0.3);
+    border-radius: 100px;
+    background: rgba(232, 50, 10, 0.06);
+    margin-bottom: 24px;
+  }
+  .eyebrow .dot{
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  h1{
+    font-size: clamp(32px, 5.5vw, 58px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.0;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  h1 .accent{ color: var(--accent-2); }
+  .hero-sub{
+    font-size: 16px; color: var(--muted); line-height: 1.7;
+    max-width: 56ch; margin-bottom: 36px;
+  }
+  .hero-sub strong{ color: var(--text); font-weight: 600; }
+
+  .id-row{ display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 640px; }
+  @media(max-width: 600px){ .id-row{ grid-template-columns: 1fr; } }
+  .id-field label{
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 7px;
+  }
+  input[type=text], textarea{
+    width: 100%;
+    background: var(--card-2);
+    border: 1px solid var(--border-2);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    padding: 13px 16px;
+    outline: none;
+    transition: border-color .18s, box-shadow .18s;
+  }
+  input[type=text]::placeholder, textarea::placeholder{ color: var(--faint); }
+  input[type=text]:focus, textarea:focus{
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  textarea{ resize: vertical; min-height: 72px; line-height: 1.55; }
+
+  /* ── MOTOR SECTIONS ─────────────────────────────────────── */
+  .motor{ padding: 40px 0 34px; border-bottom: 1px solid var(--border); }
+  .motor-head{ display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+  .motor-num{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+    color: var(--accent);
+    border: 1px solid var(--border-2);
+    background: var(--card);
+    border-radius: 8px;
+    padding: 6px 11px;
+    flex-shrink: 0;
+  }
+  .motor-title{
+    font-size: clamp(20px, 3vw, 26px);
+    font-weight: 800; letter-spacing: -0.02em; color: var(--text);
+  }
+  .motor-count{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--dim);
+    margin-left: auto;
+  }
+  .motor-desc{ color: var(--muted); font-size: 14px; max-width: 62ch; margin-bottom: 14px; }
+  .motor-example{
+    font-size: 13px; color: var(--dim);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    line-height: 1.65;
+  }
+  .motor-example .ex-tag{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent-2); display: block; margin-bottom: 4px;
+  }
+
+  /* bottleneck cards */
+  .bottleneck-block{
+    background: var(--card);
+    border: 1px solid var(--border-2);
+    border-radius: 16px;
+    padding: 20px 20px 22px;
+    margin-bottom: 14px;
+  }
+  .bottleneck-block-head{
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .bottleneck-label{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+    color: var(--accent-2);
+  }
+  .remove-btn{
+    background: none; border: none;
+    color: var(--dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 6px;
+    transition: color .18s, background .18s;
+  }
+  .remove-btn:hover{ color: var(--accent-2); background: rgba(232, 50, 10, 0.08); }
+
+  .field{ margin-bottom: 16px; }
+  .field label{
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 7px;
+  }
+
+  .slider-row{ margin-bottom: 14px; }
+  .slider-row:last-child{ margin-bottom: 2px; }
+  .slabel{
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.06em;
+    color: var(--dim);
+    margin-bottom: 8px;
+  }
+  .slabel .val{
+    font-size: 16px; font-weight: 700; color: var(--accent-2);
+  }
+  input[type=range]{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 26px;           /* generous touch target */
+    background: transparent;
+    cursor: pointer;
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-runnable-track{
+    height: 3px; background: var(--border-2); border-radius: 3px;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    margin-top: -8.5px;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--accent), 0 0 12px var(--accent-glow);
+  }
+  input[type=range]::-moz-range-track{
+    height: 3px; background: var(--border-2); border-radius: 3px;
+  }
+  input[type=range]::-moz-range-thumb{
+    width: 18px; height: 18px;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--accent), 0 0 12px var(--accent-glow);
+  }
+  input[type=range]:focus-visible{ outline: 2px solid var(--accent-2); outline-offset: 4px; border-radius: 4px; }
+
+  .add-btn{
+    display: block; width: 100%;
+    background: transparent;
+    border: 1.5px dashed var(--border-2);
+    color: var(--dim);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600; font-size: 14px;
+    text-align: left;
+    padding: 15px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color .18s, color .18s, background .18s;
+  }
+  .add-btn:hover{ border-color: var(--accent); color: var(--accent-2); background: rgba(232, 50, 10, 0.04); }
+  .add-btn:focus-visible{ outline: 2px solid var(--accent-2); outline-offset: 3px; }
+
+  /* ── MATRIX ─────────────────────────────────────────────── */
+  .section-head{ padding: 40px 0 0; }
+  .section-tag{
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+    color: var(--bg);
+    background: var(--accent);
+    border-radius: 8px;
+    padding: 6px 12px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .section-tag.ghost{ background: var(--ui-2); color: var(--muted); }
+  .section-title{
+    font-size: clamp(22px, 3.4vw, 30px);
+    font-weight: 900; letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .section-sub{ color: var(--muted); font-size: 14px; max-width: 60ch; margin-bottom: 22px; }
+  .section-sub strong{ color: var(--accent-2); font-weight: 600; }
+
+  .chart-wrap{
+    background: var(--card);
+    border: 1px solid var(--border-2);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+  svg#chart{ width: 100%; height: auto; display: block; }
+  .axis-label{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; fill: var(--dim); letter-spacing: 0.08em;
+  }
+  .quad-tag{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.08em; fill: var(--faint);
+  }
+  .quad-tag.quick{ fill: var(--accent-2); font-weight: 700; }
+  .point-label{
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px; fill: var(--text);
+  }
+  .chart-captions{
+    list-style: none;
+    margin-top: 14px; padding: 12px 4px 2px;
+    border-top: 1px solid var(--border);
+  }
+  .chart-captions li{
+    display: flex; align-items: baseline; gap: 10px;
+    font-size: 13px; color: var(--muted);
+    padding: 6px 0; line-height: 1.5;
+  }
+  .cap-num{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700; color: var(--bg);
+    min-width: 20px; height: 20px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transform: translateY(3px);
+  }
+  .cap-score{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; color: var(--faint); white-space: nowrap;
+  }
+  .legend{
+    display: flex; flex-wrap: wrap; gap: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--dim);
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+  }
+  .legend span{ display: inline-flex; align-items: center; gap: 7px; }
+  .legend i{ width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+  /* ── SUMMARY ────────────────────────────────────────────── */
+  .summary-cols{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width: 640px){ .summary-cols{ grid-template-columns: 1fr; } }
+  .summary-col{
+    background: var(--card);
+    border: 1px solid var(--border-2);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .summary-col-head{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border-2);
+  }
+  .summary-col-head.quick{ color: var(--accent-2); background: rgba(232, 50, 10, 0.07); }
+  .summary-col-head.big{ color: var(--muted); background: var(--ui); }
+  .summary-list{ list-style: none; padding: 12px 18px 16px; min-height: 52px; }
+  .summary-list li{
+    font-size: 13.5px; color: var(--text);
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+  }
+  .summary-list li:last-child{ border-bottom: none; }
+  .summary-list li .m-tag{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700;
+    margin-right: 8px;
+  }
+  .summary-empty{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--faint) !important;
+    border-bottom: none !important;
+  }
+
+  /* ── CTA ────────────────────────────────────────────────── */
+  .cta-box{
+    background: var(--card);
+    border: 1px solid var(--border-2);
+    border-radius: 16px;
+    padding: 52px 40px;
+    text-align: center;
+    margin-top: 56px;
+    position: relative; overflow: hidden;
+  }
+  .cta-box::before{
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(420px at 50% 0%, rgba(232, 50, 10, 0.10), transparent 70%);
+    pointer-events: none;
+  }
+  @media(max-width: 640px){ .cta-box{ padding: 40px 22px; } }
+  .cta-title{
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 900; letter-spacing: -0.02em; line-height: 1.05;
+    margin-bottom: 12px;
+  }
+  .cta-sub{
+    font-size: 15px; color: var(--muted); line-height: 1.7;
+    max-width: 480px; margin: 0 auto 28px;
+  }
+  .cta-sub strong{ color: var(--text); font-weight: 600; }
+
+  /* whatsapp preview bubble */
+  .preview-label{
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 10px;
+  }
+  .wa-bubble{
+    background: var(--ui-2);
+    border: 1px solid var(--border-2);
+    border-radius: 14px 14px 14px 4px;
+    padding: 14px 16px;
+    font-size: 13.5px; color: var(--text);
+    text-align: left; line-height: 1.6;
+    max-width: 460px; margin: 0 auto 28px;
+    position: relative;
+    white-space: pre-line; word-break: break-word;
+  }
+  .reset-row{ text-align: center; margin-top: 26px; }
+  .reset-link{
+    background: none; border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.08em;
+    color: var(--faint);
+    cursor: pointer; padding: 8px 12px; border-radius: 8px;
+    transition: color .18s;
+  }
+  .reset-link:hover{ color: var(--accent-2); }
+
+  .btn-spin-wrap{
+    display: inline-block;
+    padding: 2px;
+    border-radius: 13px;
+    background: conic-gradient(from var(--spin-angle, 0deg), transparent 0%, var(--accent) 12%, var(--accent-2) 20%, transparent 35%);
+    animation: spinBorder 2.8s linear infinite;
+    position: relative;
+  }
+  @keyframes spinBorder{ to{ --spin-angle: 360deg; } }
+  @property --spin-angle{ syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+  .cta-btn{
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700; font-size: 16px;
+    text-decoration: none;
+    padding: 18px 30px;
+    border-radius: 11px;
+    border: none; cursor: pointer;
+    transition: background .18s, box-shadow .18s;
+  }
+  .cta-btn:hover{ background: var(--accent-2); box-shadow: 0 8px 32px var(--accent-glow); }
+  .cta-btn:focus-visible{ outline: 2px solid var(--text); outline-offset: 3px; }
+  .cta-btn svg{ flex-shrink: 0; }
+  .cta-note{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--faint);
+    margin-top: 18px; letter-spacing: 0.04em;
+  }
+
+  footer{
+    border-top: 1px solid var(--border);
+    padding: 22px 32px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.12em;
+    color: var(--faint);
+    position: relative; z-index: 2;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .btn-spin-wrap{ animation: none; background: var(--accent); }
+    .eyebrow .dot, .logo-text .cursor{ animation: none; }
+    html{ scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a class="logo" href="sesion.html" aria-label="A13I">
+    <span class="logo-text">A<span class="num">13</span>I<span class="cursor">_</span></span>
+  </a>
+  <a class="topbar-cta" href="#cta">Mandar mi canvas →</a>
+</nav>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow"><span class="dot"></span>OPS CANVAS · ECOMMERCE</span>
+    <h1>Qué automatizar <span class="accent">primero.</span></h1>
+    <p class="hero-sub">Mapeá tu operación en 3 motores. El canvas detecta los cuellos de botella donde se te va la plata y te marca <strong>el que conviene resolver primero</strong>. 10 minutos, sin registrarte.</p>
+    <div class="id-row">
+      <div class="id-field">
+        <label for="bizName">Negocio</label>
+        <input type="text" id="bizName" placeholder="Nombre de tu eCommerce" oninput="renderCta()">
+      </div>
+      <div class="id-field">
+        <label for="bizRubro">Rubro / facturación aprox.</label>
+        <input type="text" id="bizRubro" placeholder="Ej: indumentaria, USD 300K/año" oninput="renderCta()">
+      </div>
+    </div>
+  </header>
+
+  <!-- MOTOR A: ADQUISICIÓN -->
+  <section class="motor" data-motor="A">
+    <div class="motor-head">
+      <span class="motor-num">01 · A</span>
+      <h2 class="motor-title">Adquisición</h2>
+      <span class="motor-count" id="count-A"></span>
+    </div>
+    <p class="motor-desc">Cómo generás tráfico, convertís leads en pedidos y qué pasa entre el primer contacto y la primera compra.</p>
+    <div class="motor-example"><span class="ex-tag">Ejemplo típico</span>Llega el lead por Meta Ads → se carga a mano en una planilla → seguimiento por WhatsApp sin CRM → se pierde el seguimiento después del día 3.</div>
+    <div class="bottlenecks-container" id="container-A"></div>
+    <button class="add-btn" onclick="addBottleneck('A')">+ marcar un cuello de botella en Adquisición</button>
+  </section>
+
+  <!-- MOTOR O: OPERACIÓN -->
+  <section class="motor" data-motor="O">
+    <div class="motor-head">
+      <span class="motor-num">02 · O</span>
+      <h2 class="motor-title">Operación</h2>
+      <span class="motor-count" id="count-O"></span>
+    </div>
+    <p class="motor-desc">Inventario, fulfillment, logística, proveedores, reporting. Todo lo que pasa entre que se confirma el pedido y llega al cliente.</p>
+    <div class="motor-example"><span class="ex-tag">Ejemplo típico</span>Se vende el producto → alguien chequea stock a mano en el depósito → arma la orden en Excel → la manda al courier por mail → no hay visibilidad del pedido hasta que el cliente pregunta.</div>
+    <div class="bottlenecks-container" id="container-O"></div>
+    <button class="add-btn" onclick="addBottleneck('O')">+ marcar un cuello de botella en Operación</button>
+  </section>
+
+  <!-- MOTOR S: ATENCIÓN AL CLIENTE -->
+  <section class="motor" data-motor="S">
+    <div class="motor-head">
+      <span class="motor-num">03 · S</span>
+      <h2 class="motor-title">Atención al Cliente</h2>
+      <span class="motor-count" id="count-S"></span>
+    </div>
+    <p class="motor-desc">Soporte, reclamos, devoluciones, reviews y todo lo que pasa después de la venta.</p>
+    <div class="motor-example"><span class="ex-tag">Ejemplo típico</span>El cliente escribe por Instagram con un reclamo → nadie centraliza los canales → se resuelve tarde o se pierde → no hay data de por qué devuelven.</div>
+    <div class="bottlenecks-container" id="container-S"></div>
+    <button class="add-btn" onclick="addBottleneck('S')">+ marcar un cuello de botella en Atención al Cliente</button>
+  </section>
+
+  <!-- MATRIX -->
+  <section class="section-head">
+    <span class="section-tag">Matriz</span>
+    <h2 class="section-title">Impacto × Facilidad</h2>
+    <p class="section-sub">Cada cuello de botella que cargaste aparece acá. Arriba a la derecha están tus <strong>Quick Wins</strong>: lo que más te duele y menos cuesta resolver.</p>
+    <div class="chart-wrap">
+      <svg id="chart" viewBox="0 0 640 460" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Matriz de impacto por facilidad de implementación"></svg>
+      <ul class="chart-captions" id="chartCaptions" style="display:none"></ul>
+    </div>
+    <div class="legend">
+      <span><i style="background:#ff5a30"></i>ADQUISICIÓN</span>
+      <span><i style="background:#f59e0b"></i>OPERACIÓN</span>
+      <span><i style="background:#22c55e"></i>ATENCIÓN</span>
+    </div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section class="section-head">
+    <span class="section-tag ghost">Resumen</span>
+    <h2 class="section-title">Por dónde arrancar</h2>
+    <div class="summary-cols">
+      <div class="summary-col">
+        <div class="summary-col-head quick">Quick Wins — hacé esto ya</div>
+        <ul class="summary-list" id="list-quick"><li class="summary-empty">Cargá un cuello de botella con impacto y facilidad ≥ 6.</li></ul>
+      </div>
+      <div class="summary-col">
+        <div class="summary-col-head big">Big Swings — proyectos grandes</div>
+        <ul class="summary-list" id="list-big"><li class="summary-empty">Alto impacto pero difíciles: van a un roadmap, no al día 1.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-box" id="cta">
+    <span class="eyebrow" style="margin-bottom:20px;"><span class="dot"></span>SESIÓN DE MAPEO OPERATIVO</span>
+    <h2 class="cta-title">El canvas te muestra dónde.<br>La sesión define el cómo.</h2>
+    <p class="cta-sub">Mandame tu canvas por WhatsApp. En 30 minutos lo revisamos juntos: <strong>qué automatizar primero y cuánto vale en tu P&amp;L</strong>. Sin humo y sin compromiso.</p>
+    <span class="preview-label">Así sale tu mensaje</span>
+    <div class="wa-bubble" id="msgPreview">Cargando tu mensaje…</div>
+    <div class="btn-spin-wrap">
+      <a class="cta-btn" id="waBtn" href="wa-redirect.html" onclick="prepWA()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Mandar mi canvas por WhatsApp
+      </a>
+    </div>
+    <p class="cta-note">Para eCommerce que ya venden y operan a mano. Si estás en modo exploración, guardate el canvas para cuando duela.</p>
+  </section>
+
+  <p class="reset-row"><button class="reset-link" onclick="resetCanvas()">reiniciar canvas ×</button></p>
+
+</div>
+
+<footer>A13I — SISTEMA DE AUTONOMÍA OPERATIVA</footer>
+
+<script>
+  const state = { A: [], O: [], S: [] };
+  let counter = 0;
+  const motorNames = { A: 'Adquisición', O: 'Operación', S: 'Atención al Cliente' };
+  const motorColor = { A: '#ff5a30', O: '#f59e0b', S: '#22c55e' };
+
+  function addBottleneck(motor, focus = true){
+    const id = 'bn-' + (counter++);
+    state[motor].push({ id, texto: '', impacto: 5, facilidad: 5 });
+    renderMotor(motor);
+    if(focus){
+      const el = document.getElementById(id);
+      if(el){ el.querySelector('textarea').focus(); }
+    }
+  }
+
+  function removeBottleneck(motor, id){
+    state[motor] = state[motor].filter(b => b.id !== id);
+    renderMotor(motor);
+  }
+
+  function updateField(motor, id, field, value){
+    const item = state[motor].find(b => b.id === id);
+    if(item){ item[field] = value; }
+    if(field !== 'texto'){ renderSliderVals(motor, id); }
+    renderChart();
+    renderSummary();
+    renderCta();
+  }
+
+  function renderSliderVals(motor, id){
+    const item = state[motor].find(b => b.id === id);
+    if(!item) return;
+    const impEl = document.getElementById('impval-' + id);
+    const facEl = document.getElementById('facval-' + id);
+    if(impEl) impEl.textContent = item.impacto;
+    if(facEl) facEl.textContent = item.facilidad;
+  }
+
+  function renderMotor(motor){
+    const container = document.getElementById('container-' + motor);
+    container.innerHTML = '';
+    state[motor].forEach((b, idx) => {
+      const block = document.createElement('div');
+      block.className = 'bottleneck-block';
+      block.id = b.id;
+      block.innerHTML = `
+        <div class="bottleneck-block-head">
+          <span class="bottleneck-label">CUELLO DE BOTELLA ${motor}${idx + 1}</span>
+          <button class="remove-btn" onclick="removeBottleneck('${motor}','${b.id}')" aria-label="Quitar cuello de botella">quitar ×</button>
+        </div>
+        <div class="field">
+          <label for="txt-${b.id}">Qué pasa hoy</label>
+          <textarea id="txt-${b.id}" placeholder="Describí el proceso: entrada, pasos, quién interviene, herramientas, resultado." oninput="updateField('${motor}','${b.id}','texto', this.value)"></textarea>
+        </div>
+        <div class="slider-row">
+          <div class="slabel"><span>IMPACTO EN EL NEGOCIO</span><span class="val" id="impval-${b.id}">${b.impacto}</span></div>
+          <input type="range" min="1" max="10" value="${b.impacto}" aria-label="Impacto en el negocio" oninput="updateField('${motor}','${b.id}','impacto', parseInt(this.value))">
+        </div>
+        <div class="slider-row">
+          <div class="slabel"><span>FACILIDAD DE IMPLEMENTACIÓN</span><span class="val" id="facval-${b.id}">${b.facilidad}</span></div>
+          <input type="range" min="1" max="10" value="${b.facilidad}" aria-label="Facilidad de implementación" oninput="updateField('${motor}','${b.id}','facilidad', parseInt(this.value))">
+        </div>
+      `;
+      container.appendChild(block);
+      block.querySelector('textarea').value = b.texto;
+    });
+    const countEl = document.getElementById('count-' + motor);
+    const n = state[motor].length;
+    countEl.textContent = n ? n + (n === 1 ? ' cuello' : ' cuellos') : '';
+    renderChart();
+    renderSummary();
+    renderCta();
+  }
+
+  function allBottlenecks(){
+    let all = [];
+    ['A','O','S'].forEach(m => {
+      state[m].forEach(b => all.push({ ...b, motor: m }));
+    });
+    return all;
+  }
+
+  function escapeXml(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderChart(){
+    const svg = document.getElementById('chart');
+    const all = allBottlenecks().filter(b => b.texto.trim().length > 0);
+    const W = 640, H = 460;
+    const padL = 56, padR = 24, padT = 24, padB = 50;
+    const plotW = W - padL - padR;
+    const plotH = H - padT - padB;
+
+    let parts = [];
+
+    // quick-win quadrant tint (top-right)
+    const midX = padL + plotW / 2;
+    parts.push(`<rect x="${midX}" y="${padT}" width="${plotW/2}" height="${plotH/2}" fill="rgba(232,50,10,0.08)"/>`);
+
+    // grid
+    for(let i = 0; i <= 4; i++){
+      const x = padL + (plotW / 4) * i;
+      const y = padT + (plotH / 4) * i;
+      parts.push(`<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT + plotH}" stroke="#242838" stroke-width="1"/>`);
+      parts.push(`<line x1="${padL}" y1="${y}" x2="${padL + plotW}" y2="${y}" stroke="#242838" stroke-width="1"/>`);
+    }
+    // axes
+    parts.push(`<line x1="${padL}" y1="${padT + plotH}" x2="${padL + plotW}" y2="${padT + plotH}" stroke="#4b5563" stroke-width="1.5"/>`);
+    parts.push(`<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + plotH}" stroke="#4b5563" stroke-width="1.5"/>`);
+
+    // axis labels
+    parts.push(`<text x="${padL + plotW/2}" y="${H - 14}" text-anchor="middle" class="axis-label">IMPACTO EN EL NEGOCIO →</text>`);
+    parts.push(`<text x="16" y="${padT + plotH/2}" text-anchor="middle" class="axis-label" transform="rotate(-90 16 ${padT + plotH/2})">FACILIDAD DE IMPLEMENTACIÓN →</text>`);
+
+    // quadrant tags
+    parts.push(`<text x="${padL + plotW - 6}" y="${padT + 16}" text-anchor="end" class="quad-tag quick">QUICK WINS</text>`);
+    parts.push(`<text x="${padL + 6}" y="${padT + 16}" text-anchor="start" class="quad-tag">DESCARTABLE</text>`);
+    parts.push(`<text x="${padL + plotW - 6}" y="${padT + plotH - 6}" text-anchor="end" class="quad-tag">BIG SWINGS</text>`);
+    parts.push(`<text x="${padL + 6}" y="${padT + plotH - 6}" text-anchor="start" class="quad-tag">NI LOCO</text>`);
+
+    // points — mobile: números adentro + lista abajo; desktop: labels al costado con anti-colisión
+    const narrow = window.matchMedia('(max-width: 600px)').matches;
+    const placed = [];
+    all.forEach((b, i) => {
+      const x = padL + (b.impacto / 10) * plotW;
+      const y = padT + plotH - (b.facilidad / 10) * plotH;
+      const color = motorColor[b.motor];
+      if(narrow){
+        parts.push(`<circle cx="${x}" cy="${y}" r="11" fill="${color}" stroke="#070810" stroke-width="2"/>`);
+        parts.push(`<text x="${x}" y="${y + 4.5}" text-anchor="middle" font-size="12" font-weight="700" font-family="'JetBrains Mono',monospace" fill="#070810">${i + 1}</text>`);
+      } else {
+        const anchor = x > padL + plotW * 0.72 ? 'end' : 'start';
+        const dx = anchor === 'end' ? -10 : 10;
+        let ly = y + 4;
+        while(placed.some(p => p.anchor === anchor && Math.abs(p.x - x) < 190 && Math.abs(p.y - ly) < 15)){ ly += 15; }
+        if(ly > padT + plotH - 2){ ly = y - 10; }
+        placed.push({ x, y: ly, anchor });
+        const label = b.texto.length > 24 ? b.texto.slice(0, 24) + '…' : b.texto;
+        parts.push(`<circle cx="${x}" cy="${y}" r="6" fill="${color}" stroke="#070810" stroke-width="2"/>`);
+        parts.push(`<text x="${x + dx}" y="${ly}" text-anchor="${anchor}" class="point-label">${escapeXml(label)}</text>`);
+      }
+    });
+
+    if(all.length === 0){
+      parts.push(`<text x="${W/2}" y="${H/2}" text-anchor="middle" class="axis-label">CARGÁ UN CUELLO DE BOTELLA PARA VERLO ACÁ</text>`);
+    }
+    svg.innerHTML = parts.join('');
+
+    // captions numeradas (solo mobile)
+    const caps = document.getElementById('chartCaptions');
+    if(narrow && all.length){
+      caps.innerHTML = all.map((b, i) => {
+        const t = b.texto.length > 60 ? b.texto.slice(0, 60) + '…' : b.texto;
+        return `<li><span class="cap-num" style="background:${motorColor[b.motor]}">${i + 1}</span>${escapeXml(t)} <span class="cap-score">I${b.impacto} · F${b.facilidad}</span></li>`;
+      }).join('');
+      caps.style.display = 'block';
+    } else {
+      caps.innerHTML = '';
+      caps.style.display = 'none';
+    }
+  }
+
+  function quickWins(){
+    return allBottlenecks()
+      .filter(b => b.texto.trim().length > 0 && b.impacto >= 6 && b.facilidad >= 6)
+      .sort((a, b) => (b.impacto + b.facilidad) - (a.impacto + a.facilidad));
+  }
+  function bigSwings(){
+    return allBottlenecks()
+      .filter(b => b.texto.trim().length > 0 && b.impacto >= 6 && b.facilidad < 6)
+      .sort((a, b) => (b.impacto + b.facilidad) - (a.impacto + a.facilidad));
+  }
+
+  function renderSummary(){
+    const listQuick = document.getElementById('list-quick');
+    const listBig = document.getElementById('list-big');
+    const quick = quickWins();
+    const big = bigSwings();
+
+    listQuick.innerHTML = quick.length
+      ? quick.map(b => `<li><span class="m-tag" style="color:${motorColor[b.motor]}">[${b.motor}]</span>${escapeXml(b.texto)}</li>`).join('')
+      : '<li class="summary-empty">Cargá un cuello de botella con impacto y facilidad ≥ 6.</li>';
+
+    listBig.innerHTML = big.length
+      ? big.map(b => `<li><span class="m-tag" style="color:${motorColor[b.motor]}">[${b.motor}]</span>${escapeXml(b.texto)}</li>`).join('')
+      : '<li class="summary-empty">Alto impacto pero difíciles: van a un roadmap, no al día 1.</li>';
+  }
+
+  // ── WhatsApp con resumen completo ─────────────────────────
+  function buildWaMessage(){
+    const name = document.getElementById('bizName').value.trim();
+    const rubro = document.getElementById('bizRubro').value.trim();
+    const filled = allBottlenecks().filter(b => b.texto.trim().length > 0);
+
+    if(filled.length === 0){
+      return 'Hola Axel, quiero armar mi Ops Canvas con vos en una Sesión de Mapeo Operativo. ¿Coordinamos?';
+    }
+
+    const qIds = new Set(quickWins().map(b => b.id));
+    const negocio = name ? ` de ${name}` : '';
+    const rubroTxt = rubro ? ` (${rubro})` : '';
+    let msg = `Hola Axel, armé mi Ops Canvas${negocio}${rubroTxt} — ${filled.length} cuello${filled.length === 1 ? '' : 's'} de botella:\n`;
+
+    const list = filled.slice().sort((a, b) => (b.impacto + b.facilidad) - (a.impacto + a.facilidad));
+    list.slice(0, 6).forEach((b, i) => {
+      const t = b.texto.trim();
+      const tt = t.length > 70 ? t.slice(0, 70) + '…' : t;
+      msg += `\n${i + 1}. [${motorNames[b.motor]}] ${tt} (impacto ${b.impacto}, facilidad ${b.facilidad})${qIds.has(b.id) ? ' ← quick win' : ''}`;
+    });
+    if(list.length > 6){ msg += `\n…y ${list.length - 6} más.`; }
+
+    msg += '\n\nQuiero la Sesión de Mapeo para armar el plan.';
+    return msg;
+  }
+
+  function renderCta(){
+    document.getElementById('msgPreview').textContent = buildWaMessage();
+    save();
+  }
+
+  // handoff al flujo wa-redirect del funnel
+  function prepWA(){
+    try{
+      sessionStorage.setItem('a13i_canvas_msg', buildWaMessage());
+      const rubro = document.getElementById('bizRubro').value.trim();
+      if(rubro){ sessionStorage.setItem('a13i_rubro', rubro); }
+    }catch(e){}
+    try{
+      if(typeof fbq === 'function'){ fbq('trackCustom', 'OpsCanvasWhatsApp'); }
+      if(typeof gtag === 'function'){ gtag('event', 'ops_canvas_whatsapp_click'); }
+    }catch(e){}
+  }
+
+  // ── Persistencia local ────────────────────────────────────
+  const LS_KEY = 'a13i_ops_canvas_v1';
+  function save(){
+    try{
+      localStorage.setItem(LS_KEY, JSON.stringify({
+        name: document.getElementById('bizName').value,
+        rubro: document.getElementById('bizRubro').value,
+        state, counter
+      }));
+    }catch(e){}
+  }
+  function restore(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      if(!raw) return false;
+      const data = JSON.parse(raw);
+      if(!data || !data.state) return false;
+      const hasContent = ['A','O','S'].some(m => (data.state[m] || []).some(b => b.texto && b.texto.trim())) || (data.name || '').trim() || (data.rubro || '').trim();
+      if(!hasContent) return false;
+      ['A','O','S'].forEach(m => { state[m] = (data.state[m] || []).map(b => ({ id: b.id, texto: b.texto || '', impacto: b.impacto || 5, facilidad: b.facilidad || 5 })); });
+      counter = Math.max(data.counter || 0, 1);
+      document.getElementById('bizName').value = data.name || '';
+      document.getElementById('bizRubro').value = data.rubro || '';
+      ['A','O','S'].forEach(m => { if(state[m].length === 0){ state[m].push({ id: 'bn-' + (counter++), texto: '', impacto: 5, facilidad: 5 }); } renderMotor(m); });
+      return true;
+    }catch(e){ return false; }
+  }
+  function resetCanvas(){
+    try{ localStorage.removeItem(LS_KEY); }catch(e){}
+    window.location.reload();
+  }
+
+  // ── Init ──────────────────────────────────────────────────
+  if(!restore()){
+    addBottleneck('A', false);
+    addBottleneck('O', false);
+    addBottleneck('S', false);
+  }
+  renderCta();
+  window.matchMedia('(max-width: 600px)').addEventListener('change', renderChart);
+</script>
+
+</body>
+</html>
