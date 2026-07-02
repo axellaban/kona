@@ -893,26 +893,30 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
 </head>
 <body>
 
-<!-- TOPBAR -->
-<header class="topbar">
-  <a class="logo" href="#">
-    <span class="logo-text">A<span class="num">13</span>I<span class="cursor">_</span></span>
-  </a>
-  <div class="topbar-right">
-    <span class="topbar-dot"></span>
-    Calculadora gratuita
-  </div>
-</header>
-
 <main class="wrap">
 
   <!-- PAGE HEADER / HERO -->
-  <div class="page-header">
-    <h1>
+  <div class="page-header" style="text-align:center;">
+
+    <!-- SOCIAL PROOF PILL -->
+    <div style="display:flex;justify-content:center;">
+      <div class="social-proof-pill">
+        <div class="avatar-stack">
+          <img class="av" src="/assets/av-01.webp" alt="" style="padding:0;overflow:hidden;">
+          <img class="av" src="/assets/av-02.webp" alt="" style="padding:0;overflow:hidden;">
+          <img class="av" src="/assets/av-03.webp" alt="" style="padding:0;overflow:hidden;">
+          <img class="av" src="/assets/av-04.webp" alt="" style="padding:0;overflow:hidden;">
+        </div>
+        <span style="color:var(--accent-2);font-size:12px;letter-spacing:0.04em;">★★★★★</span>
+        <span class="proof-text"><strong>+$450.000</strong> en ahorro de clientes</span>
+      </div>
+    </div>
+
+    <h1 style="margin-top:20px;">
       La IA que no aparece
       <span class="accent">en el P&amp;L no existe.</span>
     </h1>
-    <p class="page-sub">
+    <p class="page-sub" style="margin-left:auto;margin-right:auto;">
       Calculá lo que te cuesta tu operación a mano, con tus números reales, en 30 segundos.
     </p>
 
@@ -1455,60 +1459,6 @@ src="https://www.facebook.com/tr?id=1274224524679737&ev=PageView&noscript=1"/></
     // Pixel: resultados vistos
     if (typeof trackResultadosVistos === 'function') trackResultadosVistos();
   }
-
-  // ── Guard: pide WA (y nombre si falta) justo antes de mostrar resultados ──
-  // Se inserta solo si no hay a13i_wa en sessionStorage
-  (function() {
-    if (sessionStorage.getItem('a13i_wa')) return; // ya tiene WA, no insertar
-
-    const calcBtn = document.querySelector('.calc-btn');
-    if (!calcBtn) return;
-
-    const tieneNombre = !!sessionStorage.getItem('a13i_nombre');
-
-    const guard = document.createElement('div');
-    guard.id = 'guardOptin';
-    guard.style.cssText = 'background:var(--card);border:1px solid var(--border-2);border-left:3px solid var(--accent);border-radius:0 14px 14px 0;padding:24px;margin-bottom:16px;display:none;';
-    guard.innerHTML = `
-      <p style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent-2);margin-bottom:14px;">Para ver tus resultados</p>
-      ${!tieneNombre ? `<input type="text" id="guardNombre" placeholder="Tu nombre" style="display:block;margin-bottom:10px;background:var(--card-2);border:1px solid var(--border-2);border-radius:10px;color:var(--text);font-size:15px;padding:14px 16px;width:100%;outline:none;box-sizing:border-box;" autocomplete="given-name">` : ''}
-      <input type="tel" id="guardWa" placeholder="Tu WhatsApp (+54 9 11...)" style="display:block;margin-bottom:10px;background:var(--card-2);border:1px solid var(--border-2);border-radius:10px;color:var(--text);font-size:15px;padding:14px 16px;width:100%;outline:none;box-sizing:border-box;" autocomplete="tel">
-      <button onclick="saveGuardData()" style="width:100%;background:var(--accent);border:none;border-radius:10px;color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;padding:15px;cursor:pointer;box-sizing:border-box;">Ver mis resultados →</button>
-      <p style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--faint);margin-top:10px;text-align:center;">Solo para enviarte el análisis. Sin spam.</p>
-    `;
-    calcBtn.parentNode.insertBefore(guard, calcBtn);
-  })();
-
-  function saveGuardData() {
-    const waEl     = document.getElementById('guardWa');
-    const nombreEl = document.getElementById('guardNombre'); // puede no existir
-    const w = waEl ? waEl.value.trim() : '';
-    const n = nombreEl ? nombreEl.value.trim() : (sessionStorage.getItem('a13i_nombre') || '');
-    if (!w || !n) { if (!w && waEl) waEl.focus(); return; }
-    sessionStorage.setItem('a13i_wa', w);
-    sessionStorage.setItem('a13i_nombre', n);
-    document.getElementById('guardOptin').style.display = 'none';
-    fbq('track', 'Lead');
-    fetch('https://n8n-n8n.fu6abb.easypanel.host/webhook/kona-optin', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nombre: n, wa: w, fuente: 'calculadora-guard', timestamp: new Date().toISOString() })
-    }).catch(e => console.warn('Webhook guard error:', e));
-  }
-
-  // ── Mostrar guard antes de calcular si no hay datos ───────────────────────
-  const _originalRun = window.run;
-  window.run = function() {
-    const wa = sessionStorage.getItem('a13i_wa');
-    const guard = document.getElementById('guardOptin');
-    if (!wa && guard) {
-      guard.style.display = 'block';
-      guard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
-    if (typeof _originalRun === 'function') _originalRun();
-    else run_internal();
-  };
 
   // ── Mostrar nombre en el header de la calculadora ─────────────────────────
   (function() {
